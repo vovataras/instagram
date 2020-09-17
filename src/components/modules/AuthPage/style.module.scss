@@ -1,3 +1,5 @@
+@import '../../../styles/variables';
+
 .authPage {
   padding-top: 4rem;
 
@@ -20,6 +22,10 @@
       .submit {
         margin-top: 0.5rem;
       }
+    }
+
+    .link {
+      color: $primary-color;
     }
 
     .link:hover {

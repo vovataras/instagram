@@ -17,8 +17,7 @@ import styles from './style.module.scss'
 
 interface Props {
   username: string
-  avatarSrc?: string
-  avatarAlt?: string
+  avatar?: string
   image: string
   imageAlt?: string
   description?: string
@@ -29,8 +28,7 @@ interface Props {
 
 const PostCard: React.FC<Props> = ({
   username,
-  avatarSrc,
-  avatarAlt,
+  avatar,
   image,
   imageAlt,
   description,
@@ -43,13 +41,13 @@ const PostCard: React.FC<Props> = ({
     <Card>
       <CardHeader
         avatar={
-          avatarSrc ? (
-            <Avatar alt={avatarAlt} src={avatarSrc} />
-          ) : (
-            <Avatar aria-label={username.toLowerCase()}>
-              {username[0].toUpperCase()}
-            </Avatar>
-          )
+          <Avatar
+            aria-label={username.toLowerCase()}
+            alt={username}
+            src={avatar}
+          >
+            {username[0].toUpperCase()}
+          </Avatar>
         }
         action={
           <IconButton aria-label="settings">

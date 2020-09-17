@@ -5,10 +5,11 @@ import styles from './style.module.scss'
 
 const Feed = () => {
   return (
-    <Layout maxWidth="sm">
+    <Layout maxWidth="md">
       <div className={styles.feed}>
         <PostCard
           username="Lerome"
+          avatar="https://picsum.photos/100/100"
           image="https://picsum.photos/1920/1080"
           description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi dolor
           tempore repudiandae, dignissimos, totam numquam vero magni consectetur
@@ -32,6 +33,7 @@ const Feed = () => {
         />
         <PostCard
           username="May"
+          avatar="https://picsum.photos/101/101"
           image="https://picsum.photos/1930/1080"
           description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi dolor
           tempore repudiandae, dignissimos, totam numquam vero magni consectetur

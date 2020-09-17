@@ -16,7 +16,7 @@ import styles from './style.module.scss'
 const Header: React.FC<{}> = () => {
   return (
     <div className={styles.root}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" color="inherit">
         <Container maxWidth="md" className={styles.container}>
           <Toolbar disableGutters>
             <Tooltip title="Add new post" aria-label="add new post">

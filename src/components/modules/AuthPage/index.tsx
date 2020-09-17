@@ -2,6 +2,7 @@ import { Container, Paper, Typography } from '@material-ui/core'
 import React from 'react'
 import styles from './style.module.scss'
 import { Link } from 'react-router-dom'
+import { Link as MaterialLink } from '@material-ui/core'
 
 interface Props {
   children: React.ReactNode
@@ -18,9 +19,9 @@ const AuthPage: React.FC<Props> = ({ children, linkTo, linkMessage }) => {
             Instagram
           </Typography>
           {children}
-          <Link to={linkTo} className={styles.link}>
-            {linkMessage}
-          </Link>
+          <MaterialLink>
+            <Link to={linkTo}>{linkMessage}</Link>
+          </MaterialLink>
         </Paper>
       </Container>
     </div>

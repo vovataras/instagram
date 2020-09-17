@@ -17,12 +17,14 @@ const Header: React.FC<{}> = () => {
   return (
     <div className={styles.root}>
       <AppBar position="fixed">
-        <Container maxWidth="md">
-          <Toolbar>
+        <Container maxWidth="md" className={styles.container}>
+          <Toolbar disableGutters>
             <Tooltip title="Add new post" aria-label="add new post">
-              <IconButton color="inherit">
-                <AddAPhotoIcon />
-              </IconButton>
+              <Link to={Routes.ADD_POST}>
+                <IconButton color="inherit">
+                  <AddAPhotoIcon />
+                </IconButton>
+              </Link>
             </Tooltip>
             <Typography variant="h6" className={styles.title}>
               <Link to={Routes.FEED}>Instagram</Link>

@@ -26,7 +26,7 @@ const Header: React.FC<{}> = () => {
                 </IconButton>
               </Link>
             </Tooltip>
-            <Typography variant="h6" className={styles.title}>
+            <Typography variant="h6" component="h1" className={styles.title}>
               <Link to={Routes.FEED}>Instagram</Link>
             </Typography>
             <ProfileMenu />

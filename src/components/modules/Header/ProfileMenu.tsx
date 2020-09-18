@@ -4,6 +4,8 @@ import Routes from '../../../constants/routes'
 import { Menu, MenuItem, Divider, IconButton, Tooltip } from '@material-ui/core'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 
+import styles from './style.module.scss'
+
 const ProfileMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -28,6 +30,7 @@ const ProfileMenu = () => {
         </IconButton>
       </Tooltip>
       <Menu
+        className={styles.menu}
         id="simple-menu"
         anchorEl={anchorEl}
         keepMounted

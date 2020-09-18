@@ -22,8 +22,9 @@ interface Props {
   imageAlt?: string
   description?: string
   date?: string
-  likesCount: number
-  commentsCount: number
+  likesCount?: number
+  commentsCount?: number
+  postPreview?: boolean
 }
 
 const PostCard: React.FC<Props> = ({
@@ -35,6 +36,7 @@ const PostCard: React.FC<Props> = ({
   date,
   likesCount,
   commentsCount,
+  postPreview,
   ...props
 }) => {
   return (
@@ -70,10 +72,12 @@ const PostCard: React.FC<Props> = ({
           <FavoriteIcon />
         </IconButton>
         {likesCount}
+        {postPreview && '∞'}
         <IconButton aria-label="comment">
           <AddCommentIcon />
         </IconButton>
         {commentsCount}
+        {postPreview && '∞'}
       </CardActions>
     </Card>
   )

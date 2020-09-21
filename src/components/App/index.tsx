@@ -8,15 +8,20 @@ import { verifyAuth } from '../../redux/auth/actions'
 
 import styles from './style.module.scss'
 import { RootState } from '../../redux/store'
+import { initializeApp } from '../../redux/app/actions'
 
 interface Props extends PropsFromRedux {}
 
-const App: React.FC<Props> = ({ verifyAuth }) => {
+const App: React.FC<Props> = ({ verifyAuth, initialized, initializeApp }) => {
   const listener = useRef(null as firebase.Unsubscribe | null)
 
   useEffect(() => {
     listener.current = onAuthStateChanged((authUser) => {
       verifyAuth(authUser)
+
+      if (!initialized) {
+        initializeApp()
+      }
     })
 
     return () => {
@@ -24,8 +29,10 @@ const App: React.FC<Props> = ({ verifyAuth }) => {
         listener.current!()
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  if (!initialized) return <div>Initializing</div>
 
   return (
     <div className={styles.app}>
@@ -41,10 +48,13 @@ const App: React.FC<Props> = ({ verifyAuth }) => {
   )
 }
 
-let mapState = (state: RootState) => ({})
+let mapState = (state: RootState) => ({
+  initialized: state.app.initialized
+})
 
 const connector = connect(mapState, {
-  verifyAuth
+  verifyAuth,
+  initializeApp
 })
 
 type PropsFromRedux = ConnectedProps<typeof connector>

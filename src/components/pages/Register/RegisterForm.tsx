@@ -16,7 +16,12 @@ const SignupSchema = Yup.object().shape({
     .required('Required')
 })
 
-const RegisterForm = () => {
+interface Props {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setMessage: React.Dispatch<React.SetStateAction<string>>
+}
+
+const RegisterForm: React.FC<Props> = ({ setOpen, setMessage }) => {
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -26,7 +31,10 @@ const RegisterForm = () => {
     validationSchema: SignupSchema,
     onSubmit: async (values, formikHelpers) => {
       let result = await signUp(values.email, values.password)
-      console.log(result)
+      if (!result.success) {
+        setMessage(result.errorMessage)
+        setOpen(true)
+      }
       formikHelpers.setSubmitting(false)
       formikHelpers.resetForm()
     }

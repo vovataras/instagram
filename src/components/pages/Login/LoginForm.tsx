@@ -10,7 +10,12 @@ const SigninSchema = Yup.object().shape({
   password: Yup.string().required('Required')
 })
 
-const LoginForm = () => {
+interface Props {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setMessage: React.Dispatch<React.SetStateAction<string>>
+}
+
+const LoginForm: React.FC<Props> = ({ setOpen, setMessage }) => {
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -19,7 +24,10 @@ const LoginForm = () => {
     validationSchema: SigninSchema,
     onSubmit: async (values, formikHelpers) => {
       let result = await signIn(values.email, values.password)
-      console.log(result)
+      if (!result.success) {
+        setMessage(result.errorMessage)
+        setOpen(true)
+      }
       formikHelpers.setSubmitting(false)
     }
   })

@@ -2,10 +2,6 @@
   & > * {
     margin-top: 0.5rem;
   }
-
-  & :last-child {
-    margin-bottom: 0;
-  }
 }
 
 .comment {
@@ -15,5 +11,17 @@
 
   .subheader {
     margin-top: 0.25rem;
+  }
+}
+
+.inputBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 1rem;
+
+  & > :first-child {
+    margin-right: 1rem;
   }
 }

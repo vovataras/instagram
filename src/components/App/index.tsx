@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import Routes from '../../constants/routes'
-import { Login, Register, Feed, Profile, AddPost } from '../pages'
+import { Login, Register, Feed, Profile, AddPost, Post } from '../pages'
 import styles from './style.module.scss'
 
 const App = () => {
@@ -13,6 +13,7 @@ const App = () => {
         <Route exact path={Routes.SIGN_IN} component={Login} />
         <Route exact path={Routes.SIGN_UP} component={Register} />
         <Route exact path={Routes.ADD_POST} component={AddPost} />
+        <Route exact path={Routes.POST} component={Post} />
       </Switch>
     </div>
   )

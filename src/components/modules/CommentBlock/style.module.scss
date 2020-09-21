@@ -1,0 +1,19 @@
+.comments {
+  & > * {
+    margin-top: 0.5rem;
+  }
+
+  & :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.comment {
+  .header {
+    align-items: flex-start;
+  }
+
+  .subheader {
+    margin-top: 0.25rem;
+  }
+}

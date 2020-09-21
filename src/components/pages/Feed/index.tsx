@@ -1,4 +1,6 @@
 import React from 'react'
+import withAuthorization from '../../../hocs/withAuthorization'
+import { AuthUser } from '../../../typings'
 import Layout from '../../modules/Layout'
 import PostCard from '../../modules/PostCard'
 import styles from './style.module.scss'
@@ -46,4 +48,6 @@ const Feed = () => {
   )
 }
 
-export default Feed
+const condition = (authUser: AuthUser) => !authUser
+
+export default withAuthorization(condition)(Feed)

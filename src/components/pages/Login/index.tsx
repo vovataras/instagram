@@ -2,6 +2,8 @@ import React from 'react'
 import LoginForm from './LoginForm'
 import AuthPage from '../../modules/AuthPage'
 import Routes from '../../../constants/routes'
+import withAuthorization from '../../../hocs/withAuthorization'
+import { AuthUser } from '../../../typings'
 
 const Login = () => {
   return (
@@ -14,4 +16,6 @@ const Login = () => {
   )
 }
 
-export default Login
+const condition = (authUser: AuthUser) => !!authUser
+
+export default withAuthorization(condition, Routes.FEED)(Login)

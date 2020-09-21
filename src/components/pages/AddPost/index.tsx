@@ -14,6 +14,8 @@ import styles from './style.module.scss'
 import { useMediaQuery, useTheme } from '@material-ui/core'
 import Routes from '../../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { AuthUser } from '../../../typings'
+import withAuthorization from '../../../hocs/withAuthorization'
 
 const getSteps = () => {
   return ['Select photo', 'Add description', 'Share a post']
@@ -193,4 +195,6 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   )
 }
 
-export default withRouter(HorizontalLinearStepper)
+const condition = (authUser: AuthUser) => !authUser
+
+export default withAuthorization(condition)(withRouter(HorizontalLinearStepper))

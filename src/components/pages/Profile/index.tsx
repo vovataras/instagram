@@ -1,9 +1,11 @@
 import React from 'react'
 import Layout from '../../modules/Layout'
 import ProfileCard from '../../modules/ProfileCard'
+import PostCard from '../../modules/PostCard'
+import { AuthUser } from '../../../typings'
+import withAuthorization from '../../../hocs/withAuthorization'
 
 import styles from './style.module.scss'
-import PostCard from '../../modules/PostCard'
 
 const Profile = () => {
   return (
@@ -37,4 +39,6 @@ const Profile = () => {
   )
 }
 
-export default Profile
+const condition = (authUser: AuthUser) => !authUser
+
+export default withAuthorization(condition)(Profile)

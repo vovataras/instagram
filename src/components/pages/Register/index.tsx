@@ -2,6 +2,8 @@ import React from 'react'
 import RegisterForm from './RegisterForm'
 import AuthPage from '../../modules/AuthPage'
 import Routes from '../../../constants/routes'
+import { AuthUser } from '../../../typings'
+import withAuthorization from '../../../hocs/withAuthorization'
 
 const Register = () => {
   return (
@@ -14,4 +16,6 @@ const Register = () => {
   )
 }
 
-export default Register
+const condition = (authUser: AuthUser) => !!authUser
+
+export default withAuthorization(condition, Routes.FEED)(Register)

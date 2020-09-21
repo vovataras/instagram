@@ -1,4 +1,6 @@
 import React from 'react'
+import withAuthorization from '../../../hocs/withAuthorization'
+import { AuthUser } from '../../../typings'
 import CommentBlock from '../../modules/CommentBlock'
 import Layout from '../../modules/Layout'
 import PostCard from '../../modules/PostCard'
@@ -21,4 +23,6 @@ const Post = () => {
   )
 }
 
-export default Post
+const condition = (authUser: AuthUser) => !authUser
+
+export default withAuthorization(condition)(Post)

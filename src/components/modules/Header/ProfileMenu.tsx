@@ -6,7 +6,11 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 
 import styles from './style.module.scss'
 
-const ProfileMenu = () => {
+interface Props {
+  doSignOut: () => void
+}
+
+const ProfileMenu: React.FC<Props> = ({ doSignOut }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,7 +45,7 @@ const ProfileMenu = () => {
           <MenuItem>Profile</MenuItem>
         </Link>
         <Divider />
-        <MenuItem>Exit</MenuItem>
+        <MenuItem onClick={doSignOut}>Exit</MenuItem>
       </Menu>
     </div>
   )

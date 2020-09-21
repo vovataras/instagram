@@ -3,6 +3,7 @@ import { useFormik } from 'formik'
 import { Button, TextField } from '@material-ui/core'
 import styles from '../../modules/AuthPage/style.module.scss'
 import * as Yup from 'yup'
+import { signIn } from '../../../services/auth'
 
 const SigninSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -16,8 +17,9 @@ const LoginForm = () => {
       password: ''
     },
     validationSchema: SigninSchema,
-    onSubmit: (values, formikHelpers) => {
-      alert(JSON.stringify(values, null, 2))
+    onSubmit: async (values, formikHelpers) => {
+      let result = await signIn(values.email, values.password)
+      console.log(result)
       formikHelpers.setSubmitting(false)
     }
   })

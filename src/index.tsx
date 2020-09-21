@@ -7,14 +7,19 @@ import * as serviceWorker from './serviceWorker'
 import { ThemeProvider } from '@material-ui/core'
 import theme from './styles/theme'
 
+import { Provider } from 'react-redux'
+import store from './redux/store'
+
 import { BrowserRouter as Router } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <Router>
-        <App />
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <App />
+        </Router>
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

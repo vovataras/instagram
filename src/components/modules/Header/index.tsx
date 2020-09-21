@@ -12,8 +12,13 @@ import Routes from '../../../constants/routes'
 import ProfileMenu from './ProfileMenu'
 import { Link } from 'react-router-dom'
 import styles from './style.module.scss'
+import { signOut } from '../../../services/auth'
 
 const Header: React.FC<{}> = () => {
+  const doSignOut = () => {
+    signOut()
+  }
+
   return (
     <div className={styles.root}>
       <AppBar position="fixed" color="inherit">
@@ -29,7 +34,7 @@ const Header: React.FC<{}> = () => {
             <Typography variant="h6" component="h1" className={styles.title}>
               <Link to={Routes.FEED}>Instagram</Link>
             </Typography>
-            <ProfileMenu />
+            <ProfileMenu doSignOut={doSignOut} />
           </Toolbar>
         </Container>
       </AppBar>

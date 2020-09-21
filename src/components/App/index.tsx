@@ -9,6 +9,7 @@ import { verifyAuth } from '../../redux/auth/actions'
 import styles from './style.module.scss'
 import { RootState } from '../../redux/store'
 import { initializeApp } from '../../redux/app/actions'
+import Initialization from '../modules/Initialization'
 
 interface Props extends PropsFromRedux {}
 
@@ -32,7 +33,7 @@ const App: React.FC<Props> = ({ verifyAuth, initialized, initializeApp }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (!initialized) return <div>Initializing</div>
+  if (!initialized) return <Initialization />
 
   return (
     <div className={styles.app}>

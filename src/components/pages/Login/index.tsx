@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import LoginForm from './LoginForm'
+import LoginForm, { FormValues } from './LoginForm'
 import AuthPage from '../../modules/AuthPage'
 import Routes from '../../../constants/routes'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { AuthUser } from '../../../typings'
+import { FormikHelpers } from 'formik'
+import { signIn } from '../../../services/auth'
 
 const Login = () => {
   const [open, setOpen] = useState(false)
@@ -17,6 +19,18 @@ const Login = () => {
     setOpen(false)
   }
 
+  const handleSubmit = async (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => {
+    let result = await signIn(values.email, values.password)
+    if (!result.success) {
+      setMessage(result.errorMessage)
+      setOpen(true)
+    }
+    formikHelpers.setSubmitting(false)
+  }
+
   return (
     <AuthPage
       linkTo={Routes.SIGN_UP}
@@ -25,7 +39,7 @@ const Login = () => {
       alertMessage={message}
       alertHandleClose={handleClose}
     >
-      <LoginForm setOpen={setOpen} setMessage={setMessage} />
+      <LoginForm handleSubmit={handleSubmit} />
     </AuthPage>
   )
 }

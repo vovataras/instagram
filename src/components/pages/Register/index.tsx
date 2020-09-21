@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import RegisterForm from './RegisterForm'
+import RegisterForm, { FormValues } from './RegisterForm'
 import AuthPage from '../../modules/AuthPage'
 import Routes from '../../../constants/routes'
 import { AuthUser } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
+import { FormikHelpers } from 'formik'
+import { signUp } from '../../../services/auth'
 
 const Register = () => {
   const [open, setOpen] = useState(false)
@@ -17,6 +19,19 @@ const Register = () => {
     setOpen(false)
   }
 
+  const handleSubmit = async (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => {
+    let result = await signUp(values.email, values.password)
+    if (!result.success) {
+      setMessage(result.errorMessage)
+      setOpen(true)
+    }
+    formikHelpers.setSubmitting(false)
+    formikHelpers.resetForm()
+  }
+
   return (
     <AuthPage
       linkTo={Routes.SIGN_IN}
@@ -25,7 +40,7 @@ const Register = () => {
       alertMessage={message}
       alertHandleClose={handleClose}
     >
-      <RegisterForm setOpen={setOpen} setMessage={setMessage} />
+      <RegisterForm handleSubmit={handleSubmit} />
     </AuthPage>
   )
 }

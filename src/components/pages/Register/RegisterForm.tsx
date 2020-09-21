@@ -1,9 +1,8 @@
 import React from 'react'
-import { useFormik } from 'formik'
+import { FormikHelpers, useFormik } from 'formik'
 import { Button, TextField } from '@material-ui/core'
 import styles from '../../modules/AuthPage/style.module.scss'
 import * as Yup from 'yup'
-import { signUp } from '../../../services/auth'
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -16,28 +15,30 @@ const SignupSchema = Yup.object().shape({
     .required('Required')
 })
 
-interface Props {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setMessage: React.Dispatch<React.SetStateAction<string>>
+export interface FormValues {
+  username: string
+  email: string
+  password: string
 }
 
-const RegisterForm: React.FC<Props> = ({ setOpen, setMessage }) => {
+const initialValues: FormValues = {
+  username: '',
+  email: '',
+  password: ''
+}
+
+interface Props {
+  handleSubmit: (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => void
+}
+
+const RegisterForm: React.FC<Props> = ({ handleSubmit }) => {
   const formik = useFormik({
-    initialValues: {
-      username: '',
-      email: '',
-      password: ''
-    },
+    initialValues: initialValues,
     validationSchema: SignupSchema,
-    onSubmit: async (values, formikHelpers) => {
-      let result = await signUp(values.email, values.password)
-      if (!result.success) {
-        setMessage(result.errorMessage)
-        setOpen(true)
-      }
-      formikHelpers.setSubmitting(false)
-      formikHelpers.resetForm()
-    }
+    onSubmit: handleSubmit
   })
 
   const {
@@ -45,13 +46,12 @@ const RegisterForm: React.FC<Props> = ({ setOpen, setMessage }) => {
     errors,
     handleChange,
     values,
-    handleSubmit,
     handleBlur,
     isSubmitting
   } = formik
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={formik.handleSubmit} className={styles.form}>
       <TextField
         name="username"
         label="Username"

@@ -1,4 +1,5 @@
 import { firebaseAPI } from '../api'
+import { setUsername } from './user'
 
 interface ResponseBase {
   success: true | false
@@ -17,11 +18,13 @@ interface ErrorResponse extends ResponseBase {
 type Response = SuccessResponse | ErrorResponse
 
 export const signUp = async (
+  username: string,
   email: string,
   password: string
 ): Promise<Response> => {
   try {
     await firebaseAPI.createUserWithEmailAndPassword(email, password)
+    setUsername(username)
     return { success: true }
   } catch (error) {
     let errorCode = error.code

@@ -23,6 +23,8 @@ export const onAuthStateChanged = (
   completed?: firebase.Unsubscribe
 ) => auth.onAuthStateChanged(nextOrObserver, error, completed)
 
+export const currentUser = () => auth.currentUser
+
 const firebaseAPI = {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

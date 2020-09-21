@@ -23,7 +23,7 @@ const Register = () => {
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>
   ) => {
-    let result = await signUp(values.email, values.password)
+    let result = await signUp(values.username, values.email, values.password)
     if (!result.success) {
       setMessage(result.errorMessage)
       setOpen(true)

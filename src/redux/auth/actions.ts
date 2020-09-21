@@ -6,12 +6,10 @@ enum ActionsTypes {
 type AuthUser = {
   type: typeof ActionsTypes.AUTH_USER
   user: firebase.User
-  username: string | null
 }
-const authUser = (user: firebase.User, username: null | string): AuthUser => ({
+const authUser = (user: firebase.User): AuthUser => ({
   type: ActionsTypes.AUTH_USER,
-  user,
-  username
+  user
 })
 
 type SignOutUser = {
@@ -23,8 +21,7 @@ const signOutUser = (): SignOutUser => ({
 
 export const verifyAuth = (user: firebase.User | null) => (dispatch: any) => {
   if (user) {
-    let username = user?.displayName
-    dispatch(authUser(user, username))
+    dispatch(authUser(user))
   } else {
     dispatch(signOutUser())
   }

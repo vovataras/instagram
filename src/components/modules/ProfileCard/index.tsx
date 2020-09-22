@@ -1,14 +1,8 @@
 import React from 'react'
-import {
-  Card,
-  CardHeader,
-  Avatar,
-  IconButton,
-  Typography
-} from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
+import { Card, CardHeader, Avatar, Typography } from '@material-ui/core'
 
 import styles from './style.module.scss'
+import ProfileSettings from './ProfileSettings'
 
 interface Props {
   username: string
@@ -35,11 +29,7 @@ const ProfileCard: React.FC<Props> = ({
             src={avatar}
           />
         }
-        action={
-          <IconButton aria-label="settings">
-            <EditIcon />
-          </IconButton>
-        }
+        action={<ProfileSettings />}
         title={
           <Typography className={styles.title} variant="h4" component="h2">
             {username}

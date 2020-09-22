@@ -6,13 +6,17 @@ import { AuthUser } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
 
 import styles from './style.module.scss'
+import { RootState } from '../../../redux/store'
+import { connect, ConnectedProps } from 'react-redux'
 
-const Profile = () => {
+interface Props extends PropsFromRedux {}
+
+const Profile: React.FC<Props> = ({ user }) => {
   return (
     <Layout>
       <div className={styles.profile}>
         <ProfileCard
-          username="Tonny"
+          username={user?.displayName ? user.displayName : 'NULL'}
           avatar="https://picsum.photos/200/200"
           description="Instagram status"
         />
@@ -39,6 +43,14 @@ const Profile = () => {
   )
 }
 
+let mapState = (state: RootState) => ({
+  user: state.auth.user
+})
+
+const connector = connect(mapState, {})
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
 const condition = (authUser: AuthUser) => !authUser
 
-export default withAuthorization(condition)(Profile)
+export default withAuthorization(condition)(connector(Profile))

@@ -1,7 +1,7 @@
-import { currentUser } from './../api/firebase'
+import { getCurrentUser } from './../api/firebase'
 
 const setUsername = (username: string) => {
-  let user = currentUser()
+  let user = getCurrentUser()
   user?.updateProfile({ displayName: username })
 }
 

@@ -1,5 +1,7 @@
+import firebase from 'firebase'
 import app from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/database'
 import { FIREBASE_CONFIG } from '../config'
 
 const config = FIREBASE_CONFIG
@@ -23,13 +25,17 @@ export const onAuthStateChanged = (
   completed?: firebase.Unsubscribe
 ) => auth.onAuthStateChanged(nextOrObserver, error, completed)
 
-export const currentUser = () => auth.currentUser
+export const getCurrentUser = () => auth.currentUser
+
+export const database = app.database()
 
 const firebaseAPI = {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  getCurrentUser,
+  database
 }
 
 export default firebaseAPI

@@ -10,12 +10,14 @@ import styles from './style.module.scss'
 import { RootState } from '../../redux/store'
 import { initializeApp } from '../../redux/app/actions'
 import Initialization from '../modules/Initialization'
-import { posts, userPosts } from '../../services/database'
+import { posts, userPosts, users } from '../../services/database'
 import { setPosts } from '../../redux/posts/actions'
 import {
   setUserPosts,
   resetState as resetUserPostsState
 } from '../../redux/userPosts/actions'
+import { PostArray, User, UsersObject } from '../../typings'
+import { setUsers } from '../../redux/users/actions'
 
 interface Props extends PropsFromRedux {}
 
@@ -26,7 +28,8 @@ const App: React.FC<Props> = ({
   initializeApp,
   setPosts,
   setUserPosts,
-  resetUserPostsState
+  resetUserPostsState,
+  setUsers
 }) => {
   const listener = useRef(null as firebase.Unsubscribe | null)
 
@@ -37,8 +40,11 @@ const App: React.FC<Props> = ({
         if (!!uid) userPosts.off(uid)
       } else {
         userPosts.on(authUser.uid, 'value', (snapshot) => {
-          const entries = Object.entries(snapshot.val())
-          setUserPosts(entries.reverse())
+          const data = snapshot.val()
+          if (!!data) {
+            const entries = Object.entries(data)
+            setUserPosts(entries.reverse() as PostArray)
+          }
         })
       }
 
@@ -50,8 +56,25 @@ const App: React.FC<Props> = ({
     })
 
     posts.on('value', (snapshot) => {
-      const entries = Object.entries(snapshot.val())
-      setPosts(entries.reverse())
+      const data = snapshot.val()
+      if (!!data) {
+        const entries = Object.entries(data)
+        setPosts(entries.reverse() as PostArray)
+      }
+    })
+
+    users.on('value', (snapshot) => {
+      const data = snapshot.val()
+      if (!!data) {
+        const entries = Object.entries(data)
+        const users: UsersObject = {}
+
+        entries.forEach((value) => {
+          users[value[0]] = value[1] as User
+        })
+
+        setUsers(users)
+      }
     })
 
     return () => {
@@ -59,6 +82,7 @@ const App: React.FC<Props> = ({
         listener.current!()
       }
       posts.off()
+      users.off()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -89,7 +113,8 @@ const connector = connect(mapState, {
   initializeApp,
   setPosts,
   setUserPosts,
-  resetUserPostsState
+  resetUserPostsState,
+  setUsers
 })
 
 type PropsFromRedux = ConnectedProps<typeof connector>

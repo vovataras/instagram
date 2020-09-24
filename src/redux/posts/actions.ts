@@ -1,4 +1,4 @@
-import { PostArray } from '../types'
+import { PostArray } from '../../typings'
 
 enum ActionsTypes {
   SET_POSTS = 'posts/SET_POSTS',
@@ -8,9 +8,9 @@ enum ActionsTypes {
 
 type SetPosts = {
   type: typeof ActionsTypes.SET_POSTS
-  posts: Array<PostArray>
+  posts: PostArray
 }
-export const setPosts = (posts: Array<PostArray>): SetPosts => ({
+export const setPosts = (posts: PostArray): SetPosts => ({
   type: ActionsTypes.SET_POSTS,
   posts
 })

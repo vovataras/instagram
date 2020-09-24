@@ -1,9 +1,9 @@
 import { ActionsTypes, Actions } from './actions'
-import { User } from '../../typings'
+import { UsersObject } from '../../typings'
 
 let initialState = {
   isLoaded: false,
-  items: null as Array<User> | null,
+  items: null as UsersObject | null,
   error: null as string | null
 }
 type InitialStateType = typeof initialState

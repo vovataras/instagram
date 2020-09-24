@@ -7,6 +7,10 @@ export interface User {
   description?: string | null
 }
 
+export interface UsersObject {
+  [key: string]: User
+}
+
 export interface Post {
   id?: string | null
   uid?: string
@@ -16,3 +20,5 @@ export interface Post {
   likesCount: number
   commentsCount: number
 }
+
+export type PostArray = Array<[string, Post]>

@@ -1,4 +1,4 @@
-import { User } from '../../typings'
+import { UsersObject } from '../../typings'
 
 enum ActionsTypes {
   SET_USERS = 'users/SET_USERS',
@@ -8,9 +8,9 @@ enum ActionsTypes {
 
 type SetUsers = {
   type: typeof ActionsTypes.SET_USERS
-  users: Array<User>
+  users: UsersObject
 }
-export const setPosts = (users: Array<User>): SetUsers => ({
+export const setUsers = (users: UsersObject): SetUsers => ({
   type: ActionsTypes.SET_USERS,
   users
 })

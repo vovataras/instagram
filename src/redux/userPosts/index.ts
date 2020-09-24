@@ -1,9 +1,9 @@
 import { ActionsTypes, Actions } from './actions'
-import { PostArray } from '../types'
+import { PostArray } from '../../typings'
 
 let initialState = {
   isLoaded: false,
-  items: null as Array<PostArray> | null,
+  items: null as PostArray | null,
   error: null as string | null
 }
 type InitialStateType = typeof initialState

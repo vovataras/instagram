@@ -1,1 +1,0 @@
-export type PostArray = Array<string | Post>

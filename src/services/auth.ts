@@ -1,4 +1,5 @@
 import { firebaseAPI } from '../api'
+import { users } from './database'
 import { setUsername } from './user'
 
 interface ResponseBase {
@@ -23,8 +24,17 @@ export const signUp = async (
   password: string
 ): Promise<Response> => {
   try {
-    await firebaseAPI.createUserWithEmailAndPassword(email, password)
+    const userCredential = await firebaseAPI.createUserWithEmailAndPassword(
+      email,
+      password
+    )
     setUsername(username)
+    users.create({
+      uid: userCredential.user?.uid,
+      username: username,
+      avatar: null,
+      description: null
+    })
     return { success: true }
   } catch (error) {
     let errorCode = error.code

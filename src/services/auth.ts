@@ -24,16 +24,10 @@ export const signUp = async (
   password: string
 ): Promise<Response> => {
   try {
-    const userCredential = await firebaseAPI.createUserWithEmailAndPassword(
-      email,
-      password
-    )
+    await firebaseAPI.createUserWithEmailAndPassword(email, password)
     setUsername(username)
     users.create({
-      uid: userCredential.user?.uid,
-      username: username,
-      avatar: null,
-      description: null
+      username: username
     })
     return { success: true }
   } catch (error) {

@@ -12,7 +12,7 @@ const users = {
     const tempUser = { ...user }
     tempUser.uid = uid
 
-    usersRef.push(uid).set(tempUser)
+    if (!!uid) usersRef.child(uid).set(tempUser)
   },
   update: (user: User) => {
     const uid = getCurrentUser()?.uid

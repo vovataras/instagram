@@ -14,8 +14,9 @@ import styles from './style.module.scss'
 import { useMediaQuery, useTheme } from '@material-ui/core'
 import Routes from '../../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { AuthUser } from '../../../typings'
+import { AuthUser, Post } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
+import { posts } from '../../../services/database'
 
 const getSteps = () => {
   return ['Select photo', 'Add description', 'Share a post']
@@ -99,8 +100,16 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
     })
   }
 
-  const handleShare = () => {
-    console.log('share')
+  const handleShare = async () => {
+    const post: Post = {
+      image: image,
+      date: new Date(),
+      description: !description ? null : description,
+      commentsCount: 0,
+      likesCount: 0
+    }
+    await posts.create(post)
+
     handleNext()
   }
 

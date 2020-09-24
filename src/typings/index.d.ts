@@ -10,7 +10,7 @@ export interface User {
 export interface Post {
   id?: string | null
   uid?: string
-  image: string
+  image: string | null
   description: string | null
   date: Date
   likesCount: number

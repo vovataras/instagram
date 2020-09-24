@@ -33,7 +33,7 @@ const users = {
 }
 
 const posts = {
-  create: (post: Post) => {
+  create: async (post: Post) => {
     const uid = getCurrentUser()?.uid
     const newPostKey = database.ref().child('posts').push().key
 
@@ -47,7 +47,7 @@ const posts = {
     // updates[postsRef.child(newPostKey)] = tempPost
     // updates[userPostsRef.child(uid).child(newPostKey)] = tempPost
 
-    database.ref().update(updates)
+    await database.ref().update(updates)
   },
   on: (
     eventType: firebase.database.EventType,
@@ -62,8 +62,10 @@ const posts = {
     postsRef.off()
   },
   delete: (id: string) => {
+    const uid = getCurrentUser()?.uid
+
     postsRef.child(id).remove()
-    userPostsRef.child(id).remove()
+    if (!!uid) userPostsRef.child(uid).child(id).remove()
   }
 
   // TODO: likes transaction
@@ -71,16 +73,17 @@ const posts = {
 
 const userPosts = {
   on: (
+    uid: string,
     eventType: firebase.database.EventType,
     callback: (
       a: firebase.database.DataSnapshot,
       b?: string | null | undefined
     ) => any
   ) => {
-    userPostsRef.on(eventType, callback)
+    userPostsRef.child(uid).on(eventType, callback)
   },
-  off: () => {
-    userPostsRef.off()
+  off: (uid: string) => {
+    userPostsRef.child(uid).off()
   }
 }
 

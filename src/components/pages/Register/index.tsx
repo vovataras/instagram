@@ -27,9 +27,9 @@ const Register = () => {
     if (!result.success) {
       setMessage(result.errorMessage)
       setOpen(true)
+      formikHelpers.setSubmitting(false)
+      formikHelpers.resetForm()
     }
-    formikHelpers.setSubmitting(false)
-    formikHelpers.resetForm()
   }
 
   return (

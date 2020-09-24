@@ -27,8 +27,8 @@ const Login = () => {
     if (!result.success) {
       setMessage(result.errorMessage)
       setOpen(true)
+      formikHelpers.setSubmitting(false)
     }
-    formikHelpers.setSubmitting(false)
   }
 
   return (

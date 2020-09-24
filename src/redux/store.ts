@@ -3,10 +3,16 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import authReducer from './auth'
 import appReducer from './app'
+import postsReducer from './posts'
+import userPostsReducer from './userPosts'
+import usersReducer from './users'
 
 export const rootReducer = combineReducers({
   app: appReducer,
-  auth: authReducer
+  auth: authReducer,
+  posts: postsReducer,
+  userPosts: userPostsReducer,
+  users: usersReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk, logger))

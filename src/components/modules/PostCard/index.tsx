@@ -16,15 +16,16 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import styles from './style.module.scss'
 
 interface Props {
-  username: string
-  avatar?: string
+  username?: string
+  avatar?: string | null
   image: string
   imageAlt?: string
-  description?: string
+  description?: string | null
   date?: string
   likesCount?: number
   commentsCount?: number
   postPreview?: boolean
+  showSettings?: boolean
 }
 
 const PostCard: React.FC<Props> = ({
@@ -37,6 +38,7 @@ const PostCard: React.FC<Props> = ({
   likesCount,
   commentsCount,
   postPreview,
+  showSettings,
   ...props
 }) => {
   return (
@@ -44,17 +46,19 @@ const PostCard: React.FC<Props> = ({
       <CardHeader
         avatar={
           <Avatar
-            aria-label={username.toLowerCase()}
+            aria-label={username!.toLowerCase()}
             alt={username}
-            src={avatar}
+            src={avatar!}
           >
-            {username[0].toUpperCase()}
+            {username![0].toUpperCase()}
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          showSettings && (
+            <IconButton aria-label="settings">
+              <MoreVertIcon />
+            </IconButton>
+          )
         }
         title={username}
         subheader={date}

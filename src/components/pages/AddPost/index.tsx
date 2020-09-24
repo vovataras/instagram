@@ -102,7 +102,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
 
   const handleShare = async () => {
     const post: Post = {
-      image: image,
+      image: image!,
       date: new Date(),
       description: !description ? null : description,
       commentsCount: 0,

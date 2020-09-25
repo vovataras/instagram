@@ -19,6 +19,8 @@ import withAuthorization from '../../../hocs/withAuthorization'
 import { posts } from '../../../services/database'
 import { putImage } from '../../../services/storage'
 import imageCompression from 'browser-image-compression'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../redux/store'
 
 const getSteps = () => {
   return ['Select photo', 'Add description', 'Share a post']
@@ -34,6 +36,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   const [shareError, setShareError] = useState(null as string | null)
   const [isHandlingShare, setIsHandlingShare] = useState(false)
   const [description, setDescription] = useState('')
+  const user = useSelector((state: RootState) => state.auth.user)
   const steps = getSteps()
 
   const theme = useTheme()
@@ -65,6 +68,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
             image={image ? image : ''}
             description={!skipped.size ? description : ''}
             isHandlingShare={isHandlingShare}
+            user={user}
           />
         )
       default:

@@ -16,6 +16,7 @@ const userPostsReducer = (
     case ActionsTypes.SET_POSTS:
       return {
         ...state,
+        error: null,
         isLoaded: true,
         items: action.posts
       }

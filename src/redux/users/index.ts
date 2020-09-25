@@ -16,6 +16,7 @@ const usersReducer = (
     case ActionsTypes.SET_USERS:
       return {
         ...state,
+        error: null,
         isLoaded: true,
         items: action.users
       }

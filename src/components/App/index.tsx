@@ -1,23 +1,20 @@
 import React, { useEffect, useRef } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
 import { onAuthStateChanged } from '../../api/firebase'
-import Routes from '../../constants/routes'
-import { Login, Register, Feed, Profile, AddPost, Post } from '../pages'
 import { verifyAuth } from '../../redux/auth/actions'
-
-import styles from './style.module.scss'
 import { RootState } from '../../redux/store'
 import { initializeApp } from '../../redux/app/actions'
 import Initialization from '../modules/Initialization'
 import { posts, userPosts, users } from '../../services/database'
-import { setPosts } from '../../redux/posts/actions'
+import { setPosts, setError as setPostsError } from '../../redux/posts/actions'
 import {
   setUserPosts,
-  resetState as resetUserPostsState
+  resetState as resetUserPostsState,
+  setError as setUserPostsError
 } from '../../redux/userPosts/actions'
-import { PostArray, User, UsersObject } from '../../typings'
-import { setUsers } from '../../redux/users/actions'
+import { PostArray, UsersObject } from '../../typings'
+import { setUsers, setError as setUsersError } from '../../redux/users/actions'
+import AppView from './view'
 
 interface Props extends PropsFromRedux {}
 
@@ -27,9 +24,12 @@ const App: React.FC<Props> = ({
   verifyAuth,
   initializeApp,
   setPosts,
+  setPostsError,
   setUserPosts,
+  setUserPostsError,
   resetUserPostsState,
-  setUsers
+  setUsers,
+  setUsersError
 }) => {
   const listener = useRef(null as firebase.Unsubscribe | null)
 
@@ -40,10 +40,12 @@ const App: React.FC<Props> = ({
         if (!!uid) userPosts.off(uid)
       } else {
         userPosts.on(authUser.uid, 'value', (snapshot) => {
-          const data = snapshot.val()
-          if (!!data) {
+          if (snapshot.exists()) {
+            const data = snapshot.val()
             const entries = Object.entries(data)
             setUserPosts(entries.reverse() as PostArray)
+          } else {
+            setUserPostsError('No posts yet.')
           }
         })
       }
@@ -56,24 +58,21 @@ const App: React.FC<Props> = ({
     })
 
     posts.on('value', (snapshot) => {
-      const data = snapshot.val()
-      if (!!data) {
+      if (snapshot.exists()) {
+        const data = snapshot.val()
         const entries = Object.entries(data)
         setPosts(entries.reverse() as PostArray)
+      } else {
+        setPostsError('No data available!')
       }
     })
 
     users.on('value', (snapshot) => {
-      const data = snapshot.val()
-      if (!!data) {
-        const entries = Object.entries(data)
-        const users: UsersObject = {}
-
-        entries.forEach((value) => {
-          users[value[0]] = value[1] as User
-        })
-
-        setUsers(users)
+      if (snapshot.exists()) {
+        const data = snapshot.val()
+        setUsers(data as UsersObject)
+      } else {
+        setUsersError('No data available!')
       }
     })
 
@@ -89,18 +88,7 @@ const App: React.FC<Props> = ({
 
   if (!initialized) return <Initialization />
 
-  return (
-    <div className={styles.app}>
-      <Switch>
-        <Route exact path={Routes.FEED} component={Feed} />
-        <Route exact path={Routes.PROFILE} component={Profile} />
-        <Route exact path={Routes.SIGN_IN} component={Login} />
-        <Route exact path={Routes.SIGN_UP} component={Register} />
-        <Route exact path={Routes.ADD_POST} component={AddPost} />
-        <Route exact path={Routes.POST} component={Post} />
-      </Switch>
-    </div>
-  )
+  return <AppView />
 }
 
 let mapState = (state: RootState) => ({
@@ -112,9 +100,12 @@ const connector = connect(mapState, {
   verifyAuth,
   initializeApp,
   setPosts,
+  setPostsError,
   setUserPosts,
+  setUserPostsError,
   resetUserPostsState,
-  setUsers
+  setUsers,
+  setUsersError
 })
 
 type PropsFromRedux = ConnectedProps<typeof connector>

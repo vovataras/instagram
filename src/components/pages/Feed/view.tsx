@@ -1,4 +1,5 @@
 import React from 'react'
+import { Paper } from '@material-ui/core'
 import { PostArray, UsersObject } from '../../../typings'
 import Layout from '../../modules/Layout'
 import PostCard from '../../modules/PostCard'
@@ -8,32 +9,39 @@ import styles from './style.module.scss'
 interface Props {
   posts: PostArray
   users: UsersObject
+  postsError?: string | null
 }
 
-const FeedView: React.FC<Props> = ({ posts, users }) => {
-  const postCards = posts.map((value) => {
-    const postD = value[1]
-    const { uid, date, ...postData } = postD
+const FeedView: React.FC<Props> = ({ posts, users, postsError }) => {
+  let content: JSX.Element[] | JSX.Element | null = null
 
-    const userData = users[uid!]
-    const { username, avatar } = userData
+  if (postsError) {
+    content = <Paper className={styles.errorPaper}>{postsError}</Paper>
+  } else {
+    content = posts.map((value) => {
+      const postD = value[1]
+      const { uid, date, ...postData } = postD
 
-    const dateStr = new Date(date).toDateString()
+      const userData = users[uid!]
+      const { username, avatar } = userData
 
-    return (
-      <PostCard
-        key={value[0]}
-        username={username}
-        avatar={avatar}
-        {...postData}
-        date={dateStr}
-      />
-    )
-  })
+      const dateStr = new Date(date).toDateString()
+
+      return (
+        <PostCard
+          key={value[0]}
+          username={username}
+          avatar={avatar}
+          {...postData}
+          date={dateStr}
+        />
+      )
+    })
+  }
 
   return (
     <Layout maxWidth="md">
-      <div className={styles.feed}>{postCards}</div>
+      <div className={styles.feed}>{content}</div>
     </Layout>
   )
 }

@@ -10,20 +10,22 @@ interface Props extends PropsFromRedux {}
 
 const Feed: React.FC<Props> = ({
   isPostsLoaded,
-  isUsersLoaded,
+  postsError,
   posts,
+  isUsersLoaded,
   users
 }) => {
   if (!isPostsLoaded || !isUsersLoaded) return <LayoutPreloader />
-  return <FeedView posts={posts!} users={users!} />
+  return <FeedView posts={posts!} users={users!} postsError={postsError} />
 }
 
 const condition = (authUser: AuthUser) => !authUser
 
 let mapState = (state: RootState) => ({
   isPostsLoaded: state.posts.isLoaded,
-  isUsersLoaded: state.users.isLoaded,
+  postsError: state.posts.error,
   posts: state.posts.items,
+  isUsersLoaded: state.users.isLoaded,
   users: state.users.items
 })
 

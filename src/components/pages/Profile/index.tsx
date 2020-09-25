@@ -8,17 +8,33 @@ import LayoutPreloader from '../../modules/LayoutPreloader'
 
 interface Props extends PropsFromRedux {}
 
-const Profile: React.FC<Props> = ({ user, posts, users, isUsersLoaded }) => {
+const Profile: React.FC<Props> = ({
+  user,
+  isUsersLoaded,
+  users,
+  isPostsLoaded,
+  postsError,
+  posts
+}) => {
   if (!user) return null
-  if (!isUsersLoaded) return <LayoutPreloader />
-  return <ProfileView user={user} posts={posts} users={users!} />
+  if (!isUsersLoaded || !isPostsLoaded) return <LayoutPreloader />
+  return (
+    <ProfileView
+      user={user}
+      posts={posts!}
+      users={users!}
+      postsError={postsError}
+    />
+  )
 }
 
 let mapState = (state: RootState) => ({
   user: state.auth.user,
-  posts: state.userPosts.items,
+  isUsersLoaded: state.users.isLoaded,
   users: state.users.items,
-  isUsersLoaded: state.users.isLoaded
+  isPostsLoaded: state.userPosts.isLoaded,
+  postsError: state.userPosts.error,
+  posts: state.userPosts.items
 })
 
 const connector = connect(mapState, {})

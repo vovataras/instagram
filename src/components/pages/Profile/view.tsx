@@ -4,6 +4,7 @@ import { PostArray, UsersObject } from '../../../typings'
 import Layout from '../../modules/Layout'
 import PostCard from '../../modules/PostCard'
 import ProfileCard from '../../modules/ProfileCard'
+import { posts as postsServices } from '../../../services/database'
 
 import styles from './style.module.scss'
 
@@ -29,6 +30,10 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
 
       const dateStr = new Date(date).toDateString()
 
+      const handleLikeClick = () => {
+        postsServices.toggleLike(postData.id!, uid!, uid!)
+      }
+
       return (
         <PostCard
           key={value[0]}
@@ -37,6 +42,8 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
           {...postData}
           date={dateStr}
           showSettings
+          handleLikeClick={handleLikeClick}
+          currentUid={uid}
         />
       )
     })

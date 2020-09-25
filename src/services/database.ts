@@ -66,9 +66,27 @@ const posts = {
 
     postsRef.child(id).remove()
     if (!!uid) userPostsRef.child(uid).child(id).remove()
-  }
+  },
+  toggleLike: (postId: string, uid: string, postUid: string) => {
+    const toggle = (post: Post) => {
+      if (post) {
+        if (post.likes && post.likes[uid]) {
+          post.likesCount--
+          post.likes[uid] = null
+        } else {
+          post.likesCount++
+          if (!post.likes) {
+            post.likes = {}
+          }
+          post.likes[uid] = true
+        }
+      }
+      return post
+    }
 
-  // TODO: likes transaction
+    postsRef.child(postId).transaction(toggle)
+    userPostsRef.child(postUid).child(postId).transaction(toggle)
+  }
 }
 
 const userPosts = {

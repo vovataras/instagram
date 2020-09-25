@@ -14,6 +14,7 @@ import AddCommentIcon from '@material-ui/icons/AddComment'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 import styles from './style.module.scss'
+import { Likes } from '../../../typings'
 
 interface Props {
   username?: string
@@ -26,6 +27,9 @@ interface Props {
   commentsCount?: number
   postPreview?: boolean
   showSettings?: boolean
+  likes?: Likes
+  currentUid?: string | null
+  handleLikeClick?: () => void
 }
 
 const PostCard: React.FC<Props> = ({
@@ -39,6 +43,9 @@ const PostCard: React.FC<Props> = ({
   commentsCount,
   postPreview,
   showSettings,
+  likes,
+  currentUid,
+  handleLikeClick,
   ...props
 }) => {
   return (
@@ -72,8 +79,12 @@ const PostCard: React.FC<Props> = ({
         </CardContent>
       )}
       <CardActions>
-        <IconButton aria-label="like">
-          <FavoriteIcon />
+        <IconButton aria-label="like" onClick={handleLikeClick}>
+          <FavoriteIcon
+            className={
+              likes && currentUid && currentUid! in likes! ? styles.liked : ''
+            }
+          />
         </IconButton>
         {likesCount}
         {postPreview && '∞'}

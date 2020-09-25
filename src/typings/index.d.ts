@@ -1,3 +1,9 @@
+import { RootState } from '../redux/store'
+
+declare module 'react-redux' {
+  interface DefaultRootState extends RootState {}
+}
+
 export type AuthUser = firebase.User | null
 
 export interface User {
@@ -11,12 +17,15 @@ export interface UsersObject {
   [key: string]: User
 }
 
+export type Likes = { [key: string]: boolean | null } | null
+
 export interface Post {
   id?: string | null
   uid?: string
   image: string
   description: string | null
   date: Date
+  likes?: Likes
   likesCount: number
   commentsCount: number
 }

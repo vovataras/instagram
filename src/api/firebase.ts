@@ -2,6 +2,7 @@ import firebase from 'firebase'
 import app from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
+import 'firebase/storage'
 import { FIREBASE_CONFIG } from '../config'
 
 const config = FIREBASE_CONFIG
@@ -29,13 +30,16 @@ export const getCurrentUser = () => auth.currentUser
 
 export const database = app.database()
 
+export const storage = app.storage()
+
 const firebaseAPI = {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   getCurrentUser,
-  database
+  database,
+  storage
 }
 
 export default firebaseAPI

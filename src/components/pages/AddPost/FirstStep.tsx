@@ -7,13 +7,18 @@ import styles from './style.module.scss'
 interface Props {
   image: string | null
   setImage: React.Dispatch<React.SetStateAction<string | null>>
+  setImgFile: React.Dispatch<React.SetStateAction<File | null>>
 }
 
-const FirstStep: React.FC<Props> = ({ image, setImage }) => {
+const FirstStep: React.FC<Props> = ({ image, setImage, setImgFile }) => {
   const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!!event) {
-      let imageSrc = URL.createObjectURL(event.target.files![0])
+      const imgFile = event.target.files![0]
+
+      let imageSrc = URL.createObjectURL(imgFile)
       setImage(imageSrc)
+
+      setImgFile(imgFile)
     }
   }
 

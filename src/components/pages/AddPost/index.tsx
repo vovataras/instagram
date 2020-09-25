@@ -17,6 +17,8 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { AuthUser, Post } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { posts } from '../../../services/database'
+import { putImage } from '../../../services/storage'
+import imageCompression from 'browser-image-compression'
 
 const getSteps = () => {
   return ['Select photo', 'Add description', 'Share a post']
@@ -28,6 +30,9 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set<number>())
   const [image, setImage] = useState(null as string | null)
+  const [imgFile, setImgFile] = useState(null as File | null)
+  const [shareError, setShareError] = useState(null as string | null)
+  const [isHandlingShare, setIsHandlingShare] = useState(false)
   const [description, setDescription] = useState('')
   const steps = getSteps()
 
@@ -37,7 +42,13 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <FirstStep image={image} setImage={setImage} />
+        return (
+          <FirstStep
+            image={image}
+            setImage={setImage}
+            setImgFile={setImgFile}
+          />
+        )
       case 1:
         return (
           <SecondStep
@@ -53,6 +64,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
             avatar="https://picsum.photos/200/200"
             image={image ? image : ''}
             description={!skipped.size ? description : ''}
+            isHandlingShare={isHandlingShare}
           />
         )
       default:
@@ -101,16 +113,46 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   }
 
   const handleShare = async () => {
-    const post: Post = {
-      image: image!,
-      date: new Date(),
-      description: !description ? null : description,
-      commentsCount: 0,
-      likesCount: 0
-    }
-    await posts.create(post)
+    setIsHandlingShare(true)
 
-    handleNext()
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true
+    }
+    const compressedFile = await imageCompression(imgFile!, options)
+
+    const uploadTask = putImage(compressedFile)
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+      },
+      (error) => {
+        setShareError(error.message)
+        console.error(error)
+
+        handleNext()
+      },
+      async () => {
+        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL()
+
+        const post: Post = {
+          image: downloadURL,
+          date: new Date(),
+          description: !skipped.size ? description : null,
+          commentsCount: 0,
+          likesCount: 0
+        }
+        await posts.create(post)
+
+        setIsHandlingShare(false)
+
+        handleNext()
+      }
+    )
   }
 
   const handleFinal = () => {
@@ -120,7 +162,8 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
 
     return (
       <Typography className={styles.instructions}>
-        You have successfully shared the post.
+        {shareError}
+        {!shareError && 'You have successfully shared the post.'}
       </Typography>
     )
   }
@@ -176,7 +219,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
                 )}
                 {activeStep === steps.length - 1 ? (
                   <Button
-                    disabled={!image}
+                    disabled={!image || isHandlingShare}
                     variant="contained"
                     color="primary"
                     onClick={handleShare}

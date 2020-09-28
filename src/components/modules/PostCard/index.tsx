@@ -15,6 +15,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 import styles from './style.module.scss'
 import { Likes } from '../../../typings'
+import PostSettings from './PostSettings'
 
 interface Props {
   username?: string
@@ -31,6 +32,7 @@ interface Props {
   currentUid?: string | null
   handleLikeClick?: () => void
   handleCommentClick?: () => void
+  handleRemove?: () => void
 }
 
 const PostCard: React.FC<Props> = ({
@@ -48,6 +50,7 @@ const PostCard: React.FC<Props> = ({
   currentUid,
   handleLikeClick,
   handleCommentClick,
+  handleRemove,
   ...props
 }) => {
   return (
@@ -62,13 +65,7 @@ const PostCard: React.FC<Props> = ({
             {username![0].toUpperCase()}
           </Avatar>
         }
-        action={
-          showSettings && (
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          )
-        }
+        action={showSettings && <PostSettings handleRemove={handleRemove} />}
         title={username}
         subheader={date}
       />

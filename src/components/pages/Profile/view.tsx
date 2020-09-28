@@ -41,6 +41,10 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
         history.push(Routes.POST.replace(':id', postData.id!))
       }
 
+      const handleRemove = () => {
+        postsServices.delete(postData.id!)
+      }
+
       return (
         <PostCard
           key={value[0]}
@@ -52,6 +56,7 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
           handleLikeClick={handleLikeClick}
           currentUid={uid}
           handleCommentClick={handleCommentClick}
+          handleRemove={handleRemove}
         />
       )
     })

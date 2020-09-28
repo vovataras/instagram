@@ -7,6 +7,8 @@ import ProfileCard from '../../modules/ProfileCard'
 import { posts as postsServices } from '../../../services/database'
 
 import styles from './style.module.scss'
+import Routes from '../../../constants/routes'
+import { useHistory } from 'react-router-dom'
 
 interface Props {
   user: firebase.User
@@ -17,6 +19,7 @@ interface Props {
 
 const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
   let content: JSX.Element[] | JSX.Element | null = null
+  const history = useHistory()
 
   if (postsError) {
     content = <Paper className={styles.errorPaper}>{postsError}</Paper>
@@ -34,6 +37,10 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
         postsServices.toggleLike(postData.id!, uid!, uid!)
       }
 
+      const handleCommentClick = () => {
+        history.push(Routes.POST.replace(':id', postData.id!))
+      }
+
       return (
         <PostCard
           key={value[0]}
@@ -44,6 +51,7 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
           showSettings
           handleLikeClick={handleLikeClick}
           currentUid={uid}
+          handleCommentClick={handleCommentClick}
         />
       )
     })

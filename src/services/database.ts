@@ -1,10 +1,10 @@
 import { database, getCurrentUser } from '../api/firebase'
-import { Post, User } from '../typings'
+import { Post, User, Comment } from '../typings'
 
 const usersRef = database.ref('users')
 const postsRef = database.ref('posts')
 const userPostsRef = database.ref('user_posts')
-// const postCommentsRef = database.ref('post_comments')
+const commentsRef = database.ref('comments')
 
 const users = {
   create: (user: User) => {
@@ -105,12 +105,25 @@ const userPosts = {
   }
 }
 
-// TODO
-// const postComments = {
-//   create: () => {},
-//   on: () => {},
-//   off: () => {},
-//   delete: () => {}
-// }
+const comments = {
+  create: (postId: string, comment: Comment) => {
+    commentsRef.child(postId).push(comment)
+  },
+  on: (
+    postId: string,
+    eventType: firebase.database.EventType,
+    callback: (
+      a: firebase.database.DataSnapshot,
+      b?: string | null | undefined
+    ) => any
+  ) => {
+    commentsRef.child(postId).on(eventType, callback)
+  },
+  off: (postId: string) => {
+    commentsRef.child(postId).off()
+  }
+  // TODO
+  // delete: (postId: string, commentId: string) => {}
+}
 
-export { users, posts, userPosts }
+export { users, posts, userPosts, comments }

@@ -30,6 +30,7 @@ interface Props {
   likes?: Likes
   currentUid?: string | null
   handleLikeClick?: () => void
+  handleCommentClick?: () => void
 }
 
 const PostCard: React.FC<Props> = ({
@@ -46,6 +47,7 @@ const PostCard: React.FC<Props> = ({
   likes,
   currentUid,
   handleLikeClick,
+  handleCommentClick,
   ...props
 }) => {
   return (
@@ -88,11 +90,11 @@ const PostCard: React.FC<Props> = ({
         </IconButton>
         {likesCount}
         {postPreview && '∞'}
-        <IconButton aria-label="comment">
+        <IconButton aria-label="comment" onClick={handleCommentClick}>
           <AddCommentIcon />
         </IconButton>
-        {commentsCount}
-        {postPreview && '∞'}
+        {/* {commentsCount}
+        {postPreview && '∞'} */}
       </CardActions>
     </Card>
   )

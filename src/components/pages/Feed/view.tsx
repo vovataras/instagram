@@ -6,6 +6,8 @@ import PostCard from '../../modules/PostCard'
 import { posts as postsServices } from '../../../services/database'
 
 import styles from './style.module.scss'
+import { useHistory } from 'react-router-dom'
+import Routes from '../../../constants/routes'
 
 interface Props {
   posts: PostArray
@@ -21,6 +23,7 @@ const FeedView: React.FC<Props> = ({
   currentUid
 }) => {
   let content: JSX.Element[] | JSX.Element | null = null
+  const history = useHistory()
 
   if (postsError) {
     content = <Paper className={styles.errorPaper}>{postsError}</Paper>
@@ -38,6 +41,10 @@ const FeedView: React.FC<Props> = ({
         postsServices.toggleLike(postData.id!, currentUid!, uid!)
       }
 
+      const handleCommentClick = () => {
+        history.push(Routes.POST.replace(':id', postData.id!))
+      }
+
       return (
         <PostCard
           key={value[0]}
@@ -47,6 +54,7 @@ const FeedView: React.FC<Props> = ({
           date={dateStr}
           handleLikeClick={handleLikeClick}
           currentUid={currentUid}
+          handleCommentClick={handleCommentClick}
         />
       )
     })

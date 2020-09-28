@@ -31,3 +31,12 @@ export interface Post {
 }
 
 export type PostArray = Array<[string, Post]>
+
+export interface Comment {
+  id?: string
+  postId?: string
+  uid: string
+  commentText: string
+}
+
+export type CommentArray = Array<[string, Comment]>

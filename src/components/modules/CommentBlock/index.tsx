@@ -1,27 +1,83 @@
 import { Button, Paper, TextField } from '@material-ui/core'
 import React from 'react'
-import Comment from './Comment'
+import * as Yup from 'yup'
+import { FormikHelpers, useFormik } from 'formik'
 
 import styles from './style.module.scss'
+import Preloader from '../../elements/Preloader'
 
-const CommentBlock = () => {
+const SigninSchema = Yup.object().shape({
+  comment: Yup.string().max(300).required('Required')
+})
+
+export interface FormValues {
+  comment: string
+}
+
+const initialValues: FormValues = {
+  comment: ''
+}
+
+interface Props {
+  commentsContent: JSX.Element | JSX.Element[] | null
+  isCommentsLoaded: boolean
+  handleSubmit: (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => void
+}
+
+const CommentBlock: React.FC<Props> = ({
+  commentsContent,
+  isCommentsLoaded,
+  handleSubmit
+}) => {
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: SigninSchema,
+    onSubmit: handleSubmit
+  })
+
+  const {
+    touched,
+    errors,
+    handleChange,
+    values,
+    handleBlur,
+    isSubmitting
+  } = formik
+
   return (
     <div>
       <div className={styles.comments}>
-        <Comment username="Tom" comment="I'ts cool!" />
-        <Comment username="Jerry" comment="Nice" />
-        <Comment username="Mike" comment="Test comment" />
-        <Comment username="Emma" comment="Lorem ipsum!!!" />
-        <Comment
-          username="Lucy"
-          comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam quod quaerat vel enim voluptas, beatae dignissimos quis illum ea ipsa ex accusantium animi laboriosam quidem dolorum consequatur! Minima non natus eum animi assumenda hic aspernatur iure commodi officiis, enim recusandae, eligendi nesciunt alias. Commodi quisquam quod, eaque culpa ab laborum fugit corporis aliquid, dolores iusto expedita nulla ex quis alias officia quidem neque ipsa! Reprehenderit eveniet velit provident possimus ipsum illum saepe qui fuga aperiam! Tenetur ut iure autem qui voluptatem et, porro aperiam doloremque veritatis nemo magnam accusamus sit ducimus minus dignissimos, dolores a! Voluptatum harum rem laudantium necessitatibus."
-        />
+        {!isCommentsLoaded && <Preloader />}
+        {isCommentsLoaded && commentsContent}
       </div>
       <Paper className={styles.inputBlock} elevation={3}>
-        <TextField id="outlined-basic" label="Comment" variant="outlined" fullWidth />
-        <Button variant="contained" color="primary" component="span">
-          Send
-        </Button>
+        <form onSubmit={formik.handleSubmit} className={styles.form}>
+          <TextField
+            id="comment"
+            label="Comment"
+            variant="outlined"
+            multiline
+            fullWidth
+            onBlur={handleBlur('comment')}
+            // error={!!(errors['comment'] && touched['comment'])}
+            helperText={
+              errors.comment && touched.comment ? errors.comment : null
+            }
+            onChange={handleChange}
+            value={values.comment}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isSubmitting}
+          >
+            Send
+          </Button>
+        </form>
       </Paper>
     </div>
   )

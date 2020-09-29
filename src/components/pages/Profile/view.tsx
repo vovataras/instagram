@@ -15,9 +15,16 @@ interface Props {
   users: UsersObject
   posts: PostArray
   postsError?: string | null
+  handleSettingsClick?: () => void
 }
 
-const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
+const ProfileView: React.FC<Props> = ({
+  user,
+  users,
+  posts,
+  postsError,
+  handleSettingsClick
+}) => {
   let content: JSX.Element[] | JSX.Element | null = null
   const history = useHistory()
 
@@ -66,9 +73,12 @@ const ProfileView: React.FC<Props> = ({ user, users, posts, postsError }) => {
     <Layout>
       <div className={styles.profile}>
         <ProfileCard
-          username={user?.displayName ? user.displayName : 'NULL'}
+          username={
+            users[user.uid].username ? users[user.uid].username! : 'NULL'
+          }
           avatar={users[user.uid].avatar!}
           description={users[user.uid].description!}
+          handleSettingsClick={handleSettingsClick}
         />
         {content}
       </div>

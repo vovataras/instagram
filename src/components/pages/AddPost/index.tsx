@@ -14,7 +14,7 @@ import styles from './style.module.scss'
 import { useMediaQuery, useTheme } from '@material-ui/core'
 import Routes from '../../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { AuthUser, Post } from '../../../typings'
+import { AuthUser, Post, User } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { posts } from '../../../services/database'
 import { putImage } from '../../../services/storage'
@@ -36,7 +36,14 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   const [isHandlingShare, setIsHandlingShare] = useState(false)
   const [description, setDescription] = useState('')
   const user = useSelector((state) => state.auth.user)
+  const users = useSelector((state) => state.users.items)
   const steps = getSteps()
+
+  let userData: User | undefined = undefined
+
+  if (users && user) {
+    userData = users![user!.uid]
+  }
 
   const theme = useTheme()
   const desktop = useMediaQuery(theme.breakpoints.up('sm'))
@@ -62,12 +69,11 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
       case 2:
         return (
           <FinalStep
-            username="Tonny"
-            avatar="https://picsum.photos/200/200"
+            username={userData?.username}
+            avatar={userData?.avatar ? userData.avatar : ''}
             image={image ? image : ''}
             description={!skipped.size ? description : ''}
             isHandlingShare={isHandlingShare}
-            user={user}
           />
         )
       default:

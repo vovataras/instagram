@@ -10,7 +10,7 @@ export interface User {
   uid?: string
   username?: string
   avatar?: string | null
-  description?: string | null
+  description?: string
 }
 
 export interface UsersObject {

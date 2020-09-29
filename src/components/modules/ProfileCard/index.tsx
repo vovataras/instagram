@@ -1,19 +1,28 @@
 import React from 'react'
-import { Card, CardHeader, Avatar, Typography } from '@material-ui/core'
+import {
+  Card,
+  CardHeader,
+  Avatar,
+  Typography,
+  Tooltip,
+  IconButton
+} from '@material-ui/core'
+import EditIcon from '@material-ui/icons/Edit'
 
 import styles from './style.module.scss'
-import ProfileSettings from './ProfileSettings'
 
 interface Props {
   username: string
   avatar?: string
   description?: string
+  handleSettingsClick?: () => void
 }
 
 const ProfileCard: React.FC<Props> = ({
   username,
   avatar,
   description,
+  handleSettingsClick,
   ...props
 }) => {
   return (
@@ -27,9 +36,21 @@ const ProfileCard: React.FC<Props> = ({
             aria-label={username.toLowerCase()}
             alt={username}
             src={avatar}
-          />
+          >
+            {username![0].toUpperCase()}
+          </Avatar>
         }
-        action={<ProfileSettings />}
+        action={
+          <Tooltip title="Edit profile" aria-label="profile settings">
+            <IconButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleSettingsClick}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        }
         title={
           <Typography className={styles.title} variant="h4" component="h2">
             {username}

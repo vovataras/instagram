@@ -1,3 +1,5 @@
+@import '../../../styles/variables';
+
 .authPage {
   height: 100vh;
   min-height: 450px;
@@ -23,6 +25,14 @@
 
       .submit {
         margin-top: 0.5rem;
+      }
+    }
+
+    .link {
+      color: $primary-color;
+
+      &:hover {
+        text-decoration: underline;
       }
     }
   }

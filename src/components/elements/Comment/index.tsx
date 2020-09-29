@@ -14,11 +14,12 @@ interface Props {
   username: string
   avatar?: string
   comment: string
+  className?: string
 }
 
-const Comment: React.FC<Props> = ({ username, avatar, comment }) => {
+const Comment: React.FC<Props> = ({ username, avatar, comment, className }) => {
   return (
-    <Card className={styles.comment}>
+    <Card className={`${styles.comment} ${className}`}>
       <CardHeader
         className={styles.header}
         disableTypography

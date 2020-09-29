@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { onAuthStateChanged } from '../../api/firebase'
 import { verifyAuth } from '../../redux/auth/actions'
-import { RootState } from '../../redux/store'
 import { initializeApp } from '../../redux/app/actions'
 import Initialization from '../modules/Initialization'
 import { posts, userPosts, users } from '../../services/database'
@@ -12,7 +11,7 @@ import {
   resetState as resetUserPostsState,
   setError as setUserPostsError
 } from '../../redux/userPosts/actions'
-import { PostArray, UsersObject } from '../../typings'
+import { PostArray, RootState, UsersObject } from '../../typings'
 import { setUsers, setError as setUsersError } from '../../redux/users/actions'
 import AppView from './view'
 

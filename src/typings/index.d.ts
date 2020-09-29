@@ -4,6 +4,8 @@ declare module 'react-redux' {
   interface DefaultRootState extends RootState {}
 }
 
+export { RootState }
+
 export type AuthUser = firebase.User | null
 
 export interface User {

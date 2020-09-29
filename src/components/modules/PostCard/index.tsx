@@ -11,11 +11,10 @@ import {
 } from '@material-ui/core'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import AddCommentIcon from '@material-ui/icons/AddComment'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-
-import styles from './style.module.scss'
 import { Likes } from '../../../typings'
 import PostSettings from './PostSettings'
+
+import styles from './style.module.scss'
 
 interface Props {
   username?: string

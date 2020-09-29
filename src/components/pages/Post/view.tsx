@@ -15,6 +15,7 @@ interface Props {
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>
   ) => void
+  handleLikeClick?: () => void
 }
 
 const PostView: React.FC<Props> = ({
@@ -23,7 +24,8 @@ const PostView: React.FC<Props> = ({
   currentUid,
   commentsContent,
   isCommentsLoaded,
-  handleSubmit
+  handleSubmit,
+  handleLikeClick
 }) => {
   let { date, ...postData } = post
   let { username, avatar } = user
@@ -36,6 +38,7 @@ const PostView: React.FC<Props> = ({
         date={new Date(post.date).toDateString()}
         {...postData}
         currentUid={currentUid}
+        handleLikeClick={handleLikeClick}
       />
       <CommentBlock
         handleSubmit={handleSubmit}

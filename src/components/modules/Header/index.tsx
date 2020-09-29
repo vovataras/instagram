@@ -11,8 +11,9 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
 import Routes from '../../../constants/routes'
 import ProfileMenu from './ProfileMenu'
 import { Link } from 'react-router-dom'
-import styles from './style.module.scss'
 import { signOut } from '../../../services/auth'
+
+import styles from './style.module.scss'
 
 const Header: React.FC<{}> = () => {
   const doSignOut = () => {

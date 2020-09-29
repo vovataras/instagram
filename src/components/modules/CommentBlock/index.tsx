@@ -2,9 +2,9 @@ import { Button, Paper, TextField } from '@material-ui/core'
 import React from 'react'
 import * as Yup from 'yup'
 import { FormikHelpers, useFormik } from 'formik'
+import Preloader from '../../elements/Preloader'
 
 import styles from './style.module.scss'
-import Preloader from '../../elements/Preloader'
 
 const SigninSchema = Yup.object().shape({
   comment: Yup.string().max(300).required('Required')

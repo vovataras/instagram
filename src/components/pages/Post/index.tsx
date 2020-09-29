@@ -10,6 +10,7 @@ import { Comment as CommentType } from '../../../typings'
 import { FormValues } from '../../modules/CommentBlock'
 import { FormikHelpers } from 'formik'
 import Comment from '../../elements/Comment'
+import { posts as postsServices } from '../../../services/database'
 
 interface Props extends RouteComponentProps<{ id: string }> {}
 
@@ -46,6 +47,10 @@ const Post: React.FC<Props> = ({ match, ...props }) => {
     const postEntry = posts.find((value) => value[0] === postId!)
     const post = postEntry![1]
     const userData = users![post.uid!]
+
+    const handleLikeClick = () => {
+      postsServices.toggleLike(post.id!, currentUid!, post.uid!)
+    }
 
     const handleSubmit = (
       values: FormValues,
@@ -89,6 +94,7 @@ const Post: React.FC<Props> = ({ match, ...props }) => {
         handleSubmit={handleSubmit}
         isCommentsLoaded={isCommentsLoaded}
         commentsContent={commentsContent}
+        handleLikeClick={handleLikeClick}
       />
     )
   } else {

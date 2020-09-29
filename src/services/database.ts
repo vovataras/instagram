@@ -100,6 +100,16 @@ const userPosts = {
   ) => {
     userPostsRef.child(uid).on(eventType, callback)
   },
+  once: (
+    uid: string,
+    eventType: firebase.database.EventType,
+    callback: (
+      a: firebase.database.DataSnapshot,
+      b?: string | null | undefined
+    ) => any
+  ) => {
+    userPostsRef.child(uid).once(eventType).then(callback)
+  },
   off: (uid: string) => {
     userPostsRef.child(uid).off()
   }

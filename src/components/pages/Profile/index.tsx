@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AuthUser, PostArray, User } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { RootState } from '../../../redux/store'
@@ -8,14 +8,13 @@ import LayoutPreloader from '../../modules/LayoutPreloader'
 import EditProfile, { FormValues } from './EditProfile'
 import { FormikHelpers } from 'formik'
 import { users as usersServices } from '../../../services/database'
-import imageCompression from 'browser-image-compression'
-import { putAvatar } from '../../../services/storage'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import Routes from '../../../constants/routes'
 import PostCard from '../../modules/PostCard'
 import { posts as postsServices } from '../../../services/database'
 import { Paper } from '@material-ui/core'
 import { userPosts as userPostsServices } from '../../../services/database'
+import { uploadPhoto } from '../../../services/upload'
 
 import styles from './style.module.scss'
 
@@ -33,54 +32,71 @@ const Profile: React.FC<Props> = ({
 }) => {
   const [open, setOpen] = useState(false)
   const [imgFile, setImgFile] = useState(null as File | null)
-  const [posts, setPosts] = useState(null as PostArray | null)
-  const [postsError, setPostsError] = useState(null as string | null)
-  const [isPostsLoaded, setIsPostsLoaded] = useState(false)
+  const [postsState, setPostsState] = useState({
+    isLoaded: false,
+    items: null as PostArray | null,
+    error: null as string | null
+  })
 
   const profileID = match.params.id
   let isOwner = false
+  let userData: User | undefined = undefined
+  let content: JSX.Element[] | JSX.Element | null = null
 
-  if (profileID) {
-    userPostsServices.once(profileID, 'value', (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val()
-        setPosts(data as PostArray)
+  if (user) {
+    isOwner = user.uid === profileID
+
+    if (users) {
+      if (profileID) {
+        userData = users[profileID]
       } else {
-        setPostsError('No data available!')
+        userData = users[user.uid]
+        isOwner = true
       }
-      setIsPostsLoaded(true)
-    })
+    }
   }
 
-  if (!isUsersLoaded || !isUserPostsLoaded || (profileID && !isPostsLoaded)) {
+  useEffect(() => {
+    if (profileID && !isOwner) {
+      const getData = async () => {
+        const data = await userPostsServices.getPosts(profileID)
+
+        if (data) {
+          setPostsState({
+            isLoaded: true,
+            items: data,
+            error: null
+          })
+        } else {
+          setPostsState({
+            isLoaded: true,
+            items: null,
+            error: 'No data available!'
+          })
+        }
+      }
+
+      getData()
+    }
+  }, [profileID, isOwner])
+
+  if (
+    !isUsersLoaded ||
+    !isUserPostsLoaded ||
+    (profileID && !isOwner && !postsState.isLoaded)
+  ) {
     return <LayoutPreloader />
   }
-  if (
-    !user ||
-    !users
-    // || !userPosts || (profileID && !posts)
-  )
-    return null
 
-  const handleSettingsClick = () => {
-    setOpen(true)
-  }
-
-  let userData: User | undefined = undefined
-
-  if (profileID) {
-    userData = users[profileID]
-    isOwner = user.uid === profileID
-  } else {
-    userData = users[user.uid]
-    isOwner = true
-  }
+  if (!user) return null
 
   if (!userData) {
     history.push(Routes.PAGE404)
   }
 
-  // !################################################
+  const handleSettingsClick = () => {
+    setOpen(true)
+  }
 
   const handleFormSubmit = async (
     values: FormValues,
@@ -97,53 +113,22 @@ const Profile: React.FC<Props> = ({
       }
     }
 
-    const uploadPhoto = async () => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 500,
-        useWebWorker: true
-      }
-      const compressedFile = await imageCompression(imgFile!, options)
-
-      const uploadTask = putAvatar(compressedFile)
-
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          console.log('Upload is ' + progress + '% done')
-        },
-        (error) => {
-          console.error(error)
-        },
-        async () => {
-          const downloadURL = await uploadTask.snapshot.ref.getDownloadURL()
-          newUserData.avatar = downloadURL
-
-          checkValues()
-          usersServices.update(newUserData)
-        }
-      )
-    }
-
     if (imgFile) {
-      await uploadPhoto()
+      let downloadURL = await uploadPhoto(imgFile)
+      newUserData.avatar = downloadURL
+      checkValues()
     } else {
       checkValues()
-
-      if (Object.keys(newUserData).length !== 0) {
-        usersServices.update(newUserData)
-      }
     }
+
+    if (Object.keys(newUserData).length !== 0) {
+      usersServices.update(newUserData)
+    }
+
     formikHelpers.setSubmitting(false)
     setImgFile(null)
     setOpen(false)
   }
-
-  // !################################################
-
-  let content: JSX.Element[] | JSX.Element | null = null
 
   const getContent = (
     posts: PostArray,
@@ -153,9 +138,7 @@ const Profile: React.FC<Props> = ({
     const content = posts.map((value) => {
       const postD = value[1]
       const { uid, date, ...postData } = postD
-
       const { username, avatar } = userData!
-
       const dateStr = new Date(date).toDateString()
 
       const handleLikeClick = () => {
@@ -181,7 +164,7 @@ const Profile: React.FC<Props> = ({
           handleLikeClick={handleLikeClick}
           handleCommentClick={handleCommentClick}
           showSettings={isOwner}
-          handleRemove={handleRemove}
+          handleRemove={isOwner ? handleRemove : undefined}
         />
       )
     })
@@ -189,23 +172,23 @@ const Profile: React.FC<Props> = ({
     return content
   }
 
-  if (isOwner) {
-    if (userPostsError) {
-      content = <Paper className={styles.errorPaper}>{userPostsError}</Paper>
-    } else {
-      content = getContent(userPosts!, user.uid, true)
-    }
-  } else {
-    if (postsError) {
-      content = <Paper className={styles.errorPaper}>{postsError}</Paper>
-    } else {
-      content = getContent(posts!, user.uid, false)
+  const setContent = (
+    error: string | null,
+    posts: PostArray | null,
+    isOwner: boolean
+  ) => {
+    if (error) {
+      content = <Paper className={styles.errorPaper}>{error}</Paper>
+    } else if (posts) {
+      content = getContent(posts, user.uid, isOwner)
     }
   }
 
-  // !################################################
-
-  // TODO: refactor
+  if (isOwner) {
+    setContent(userPostsError, userPosts, true)
+  } else {
+    setContent(postsState.error, postsState.items, false)
+  }
 
   return (
     <>
@@ -213,22 +196,21 @@ const Profile: React.FC<Props> = ({
         username={userData?.username}
         avatar={userData?.avatar ? userData?.avatar : undefined}
         description={userData?.description}
-        content={content!}
-        // user={user}
-        // posts={posts!}
-        // users={users!}
-        // postsError={postsError}
+        content={content}
+        showSettings={isOwner}
         handleSettingsClick={handleSettingsClick}
       />
-      <EditProfile
-        usernameVal={userData?.username}
-        descriptionVal={userData?.description}
-        open={open}
-        setOpen={setOpen}
-        imgFile={imgFile}
-        setImgFile={setImgFile}
-        handleSubmit={handleFormSubmit}
-      />
+      {isOwner && (
+        <EditProfile
+          usernameVal={userData?.username}
+          descriptionVal={userData?.description}
+          open={open}
+          setOpen={setOpen}
+          imgFile={imgFile}
+          setImgFile={setImgFile}
+          handleSubmit={handleFormSubmit}
+        />
+      )}
     </>
   )
 }

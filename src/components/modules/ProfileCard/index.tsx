@@ -15,6 +15,7 @@ interface Props {
   username: string
   avatar?: string
   description?: string
+  showSettings?: boolean
   handleSettingsClick?: () => void
 }
 
@@ -22,6 +23,7 @@ const ProfileCard: React.FC<Props> = ({
   username,
   avatar,
   description,
+  showSettings,
   handleSettingsClick,
   ...props
 }) => {
@@ -41,15 +43,17 @@ const ProfileCard: React.FC<Props> = ({
           </Avatar>
         }
         action={
-          <Tooltip title="Edit profile" aria-label="profile settings">
-            <IconButton
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              onClick={handleSettingsClick}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
+          showSettings && (
+            <Tooltip title="Edit profile" aria-label="profile settings">
+              <IconButton
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleSettingsClick}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          )
         }
         title={
           <Typography className={styles.title} variant="h4" component="h2">

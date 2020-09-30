@@ -1,5 +1,5 @@
 import { database, getCurrentUser } from '../api/firebase'
-import { Post, User, Comment } from '../typings'
+import { Post, User, Comment, PostArray } from '../typings'
 
 const usersRef = database.ref('users')
 const postsRef = database.ref('posts')
@@ -100,15 +100,16 @@ const userPosts = {
   ) => {
     userPostsRef.child(uid).on(eventType, callback)
   },
-  once: (
-    uid: string,
-    eventType: firebase.database.EventType,
-    callback: (
-      a: firebase.database.DataSnapshot,
-      b?: string | null | undefined
-    ) => any
-  ) => {
-    userPostsRef.child(uid).once(eventType).then(callback)
+  getPosts: async (uid: string) => {
+    let entries: PostArray | null = null
+    let snapshot = await userPostsRef.child(uid).once('value')
+
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      const _entries = Object.entries(data)
+      entries = _entries.reverse() as PostArray
+    }
+    return entries
   },
   off: (uid: string) => {
     userPostsRef.child(uid).off()

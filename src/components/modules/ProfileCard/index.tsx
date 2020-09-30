@@ -5,7 +5,9 @@ import {
   Avatar,
   Typography,
   Tooltip,
-  IconButton
+  IconButton,
+  useTheme,
+  useMediaQuery
 } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 
@@ -27,6 +29,10 @@ const ProfileCard: React.FC<Props> = ({
   handleSettingsClick,
   ...props
 }) => {
+  const theme = useTheme()
+  const mobileXS = useMediaQuery('(max-width:400px)')
+  const mobile = useMediaQuery(theme.breakpoints.up('sm'))
+
   return (
     <Card>
       <CardHeader
@@ -34,7 +40,13 @@ const ProfileCard: React.FC<Props> = ({
         disableTypography
         avatar={
           <Avatar
-            className={styles.avatar}
+            className={
+              mobileXS
+                ? styles.avatarXS
+                : mobile
+                ? styles.avatar
+                : styles.avatarSM
+            }
             aria-label={username.toLowerCase()}
             alt={username}
             src={avatar}
@@ -56,7 +68,11 @@ const ProfileCard: React.FC<Props> = ({
           )
         }
         title={
-          <Typography className={styles.title} variant="h4" component="h2">
+          <Typography
+            className={styles.title}
+            variant={mobileXS ? 'h6' : mobile ? 'h4' : 'h5'}
+            component="h2"
+          >
             {username}
           </Typography>
         }

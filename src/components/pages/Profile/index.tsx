@@ -58,25 +58,29 @@ const Profile: React.FC<Props> = ({
 
   useEffect(() => {
     if (profileID && !isOwner) {
-      const getData = async () => {
-        const data = await userPostsServices.getPosts(profileID)
-
-        if (data) {
+      userPostsServices.on(profileID, 'value', (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val()
+          const entries = Object.entries(data)
           setPostsState({
             isLoaded: true,
-            items: data,
+            items: entries.reverse() as PostArray,
             error: null
           })
         } else {
           setPostsState({
             isLoaded: true,
             items: null,
-            error: 'No data available!'
+            error: 'No posts yet.'
           })
         }
-      }
+      })
+    }
 
-      getData()
+    return () => {
+      if (profileID && !isOwner) {
+        userPostsServices.off(profileID)
+      }
     }
   }, [profileID, isOwner])
 

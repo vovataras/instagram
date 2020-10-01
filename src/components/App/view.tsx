@@ -10,7 +10,7 @@ const AppView = () => {
     <div className={styles.app}>
       <Switch>
         <Route exact path={Routes.FEED} component={Feed} />
-        <Route exact path={Routes.PROFILE} component={Profile} />
+        <Route exact path={Routes.PROFILE_ID} component={Profile} />
         <Route exact path={Routes.SIGN_IN} component={Login} />
         <Route exact path={Routes.SIGN_UP} component={Register} />
         <Route exact path={Routes.ADD_POST} component={AddPost} />

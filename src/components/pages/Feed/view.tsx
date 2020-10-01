@@ -37,6 +37,8 @@ const FeedView: React.FC<Props> = ({
 
       const dateStr = new Date(date).toDateString()
 
+      const profileLink = Routes.PROFILE_ID.replace(':id', uid!)
+
       const handleLikeClick = () => {
         postsServices.toggleLike(postData.id!, currentUid!, uid!)
       }
@@ -48,6 +50,7 @@ const FeedView: React.FC<Props> = ({
       return (
         <PostCard
           key={value[0]}
+          profileLink={profileLink}
           username={username}
           avatar={avatar}
           {...postData}

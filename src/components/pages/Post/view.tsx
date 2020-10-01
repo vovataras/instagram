@@ -4,6 +4,7 @@ import Layout from '../../modules/Layout'
 import PostCard from '../../modules/PostCard'
 import { Post, User } from '../../../typings'
 import { FormikHelpers } from 'formik'
+import Routes from '../../../constants/routes'
 
 interface Props {
   post: Post
@@ -28,11 +29,14 @@ const PostView: React.FC<Props> = ({
   handleLikeClick
 }) => {
   let { date, ...postData } = post
-  let { username, avatar } = user
+  let { uid, username, avatar } = user
+
+  const profileLink = Routes.PROFILE_ID.replace(':id', uid!)
 
   return (
     <Layout>
       <PostCard
+        profileLink={profileLink}
         username={username}
         avatar={avatar}
         date={new Date(post.date).toDateString()}

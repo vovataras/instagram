@@ -13,10 +13,12 @@ import FavoriteIcon from '@material-ui/icons/Favorite'
 import AddCommentIcon from '@material-ui/icons/AddComment'
 import { Likes } from '../../../typings'
 import PostSettings from './PostSettings'
+import { Link } from 'react-router-dom'
 
 import styles from './style.module.scss'
 
 interface Props {
+  profileLink?: string
   username?: string
   avatar?: string | null
   image: string
@@ -35,6 +37,7 @@ interface Props {
 }
 
 const PostCard: React.FC<Props> = ({
+  profileLink,
   username,
   avatar,
   image,
@@ -52,22 +55,26 @@ const PostCard: React.FC<Props> = ({
   handleRemove,
   ...props
 }) => {
+  const Header = (
+    <CardHeader
+      avatar={
+        <Avatar
+          aria-label={username!.toLowerCase()}
+          alt={username}
+          src={avatar!}
+        >
+          {username![0].toUpperCase()}
+        </Avatar>
+      }
+      action={showSettings && <PostSettings handleRemove={handleRemove} />}
+      title={username}
+      subheader={date}
+    />
+  )
+
   return (
     <Card>
-      <CardHeader
-        avatar={
-          <Avatar
-            aria-label={username!.toLowerCase()}
-            alt={username}
-            src={avatar!}
-          >
-            {username![0].toUpperCase()}
-          </Avatar>
-        }
-        action={showSettings && <PostSettings handleRemove={handleRemove} />}
-        title={username}
-        subheader={date}
-      />
+      {profileLink ? <Link to={profileLink}>{Header}</Link> : Header}
       <CardMedia className={styles.media} image={image} title={imageAlt} />
       {description && (
         <CardContent>

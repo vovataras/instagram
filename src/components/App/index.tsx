@@ -11,7 +11,13 @@ import {
   resetState as resetUserPostsState,
   setError as setUserPostsError
 } from '../../redux/userPosts/actions'
-import { PostArray, RootState, UsersObject } from '../../typings'
+import {
+  CommentArray,
+  CommentsObject,
+  PostArray,
+  RootState,
+  UsersObject
+} from '../../typings'
 import { setUsers, setError as setUsersError } from '../../redux/users/actions'
 import {
   setComments,
@@ -84,7 +90,14 @@ const App: React.FC<Props> = ({
     comments.on('value', (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val()
-        setComments(data)
+        let commentsObj: CommentsObject = {}
+
+        for (const key in data) {
+          const entries = Object.entries(data[key])
+          commentsObj[key] = entries as CommentArray
+        }
+
+        setComments(commentsObj)
       } else {
         setCommentsError('No data available!')
       }

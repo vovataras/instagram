@@ -1,17 +1,24 @@
 import React from 'react'
 import { Paper } from '@material-ui/core'
-import { PostArray, UsersObject } from '../../../typings'
+import {
+  CommentArray,
+  CommentsObject,
+  PostArray,
+  UsersObject
+} from '../../../typings'
 import Layout from '../../modules/Layout'
 import PostCard from '../../modules/PostCard'
 import { posts as postsServices } from '../../../services/database'
+import { Link, useHistory } from 'react-router-dom'
+import Routes from '../../../constants/routes'
+import Comment from '../../elements/Comment'
 
 import styles from './style.module.scss'
-import { useHistory } from 'react-router-dom'
-import Routes from '../../../constants/routes'
 
 interface Props {
   posts: PostArray
   users: UsersObject
+  comments?: CommentsObject | null
   postsError?: string | null
   currentUid?: string | null
 }
@@ -20,7 +27,8 @@ const FeedView: React.FC<Props> = ({
   posts,
   users,
   postsError,
-  currentUid
+  currentUid,
+  comments
 }) => {
   let content: JSX.Element[] | JSX.Element | null = null
   const history = useHistory()
@@ -47,18 +55,75 @@ const FeedView: React.FC<Props> = ({
         history.push(Routes.POST.replace(':id', postData.id!))
       }
 
+      let mappedComments: JSX.Element[] | JSX.Element | null = null
+
+      let postComments: CommentArray | null = null
+      const maxCommentsCount = 2
+
+      if (comments) {
+        postComments = comments[postData.id!]
+      }
+
+      let allCommentsCount: number | null = null
+
+      if (postComments) {
+        const restCount = postComments.length - maxCommentsCount
+
+        if (restCount > 0) {
+          allCommentsCount = postComments.length
+        } else {
+          allCommentsCount = null
+        }
+
+        let postCommentsCopy = [...postComments]
+        postCommentsCopy.reverse()
+
+        let sliced = postCommentsCopy.slice(0, maxCommentsCount)
+
+        let slicedCopy = [...sliced]
+        slicedCopy.reverse()
+
+        mappedComments = slicedCopy.map((value) => {
+          const commentsD = value[1]
+          const { uid, commentText } = commentsD
+
+          const userData = users[uid!]
+          const { username, avatar } = userData
+
+          return (
+            <Comment
+              key={value[0]}
+              username={username!}
+              avatar={avatar!}
+              comment={commentText}
+            />
+          )
+        })
+      }
+
       return (
-        <PostCard
-          key={value[0]}
-          profileLink={profileLink}
-          username={username}
-          avatar={avatar}
-          {...postData}
-          date={dateStr}
-          handleLikeClick={handleLikeClick}
-          currentUid={currentUid}
-          handleCommentClick={handleCommentClick}
-        />
+        <div key={value[0]}>
+          <PostCard
+            profileLink={profileLink}
+            username={username}
+            avatar={avatar}
+            {...postData}
+            date={dateStr}
+            handleLikeClick={handleLikeClick}
+            currentUid={currentUid}
+            handleCommentClick={handleCommentClick}
+          />
+          {allCommentsCount && (
+            <Link to={Routes.POST.replace(':id', postData.id!)}>
+              <Paper className={styles.paperLink}>
+                View all {allCommentsCount} comments.
+              </Paper>
+            </Link>
+          )}
+          {mappedComments && (
+            <div className={styles.comments}>{mappedComments}</div>
+          )}
+        </div>
       )
     })
   }

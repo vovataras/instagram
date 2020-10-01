@@ -14,13 +14,17 @@ const Feed: React.FC<Props> = ({
   posts,
   isUsersLoaded,
   users,
-  currentUid
+  currentUid,
+  isCommentsLoaded,
+  comments
 }) => {
-  if (!isPostsLoaded || !isUsersLoaded) return <LayoutPreloader />
+  if (!isPostsLoaded || !isUsersLoaded || !isCommentsLoaded)
+    return <LayoutPreloader />
   return (
     <FeedView
       posts={posts!}
       users={users!}
+      comments={comments}
       postsError={postsError}
       currentUid={currentUid}
     />
@@ -35,7 +39,9 @@ let mapState = (state: RootState) => ({
   posts: state.posts.items,
   isUsersLoaded: state.users.isLoaded,
   users: state.users.items,
-  currentUid: state.auth.uid
+  currentUid: state.auth.uid,
+  isCommentsLoaded: state.comments.isLoaded,
+  comments: state.comments.items
 })
 
 const connector = connect(mapState, {})

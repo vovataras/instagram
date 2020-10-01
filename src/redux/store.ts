@@ -6,13 +6,15 @@ import appReducer from './app'
 import postsReducer from './posts'
 import userPostsReducer from './userPosts'
 import usersReducer from './users'
+import commentsReducer from './comments'
 
 export const rootReducer = combineReducers({
   app: appReducer,
   auth: authReducer,
   posts: postsReducer,
   userPosts: userPostsReducer,
-  users: usersReducer
+  users: usersReducer,
+  comments: commentsReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk, logger))

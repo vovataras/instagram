@@ -6,6 +6,10 @@ const postsRef = database.ref('posts')
 const userPostsRef = database.ref('user_posts')
 const commentsRef = database.ref('comments')
 
+
+
+// ##### USERS #####
+
 const users = {
   create: (user: User) => {
     const uid = getCurrentUser()?.uid
@@ -31,6 +35,11 @@ const users = {
     usersRef.off()
   }
 }
+
+
+
+
+// ##### POSTS #####
 
 const posts = {
   create: async (post: Post) => {
@@ -89,6 +98,11 @@ const posts = {
   }
 }
 
+
+
+
+// ##### USER_POSTS #####
+
 const userPosts = {
   on: (
     uid: string,
@@ -116,11 +130,27 @@ const userPosts = {
   }
 }
 
+
+
+// ##### COMMENTS #####
+
 const comments = {
   create: (postId: string, comment: Comment) => {
     commentsRef.child(postId).push(comment)
   },
   on: (
+    eventType: firebase.database.EventType,
+    callback: (
+      a: firebase.database.DataSnapshot,
+      b?: string | null | undefined
+    ) => any
+  ) => {
+    commentsRef.on(eventType, callback)
+  },
+  off: () => {
+    commentsRef.off()
+  },
+  onSpecific: (
     postId: string,
     eventType: firebase.database.EventType,
     callback: (
@@ -130,7 +160,7 @@ const comments = {
   ) => {
     commentsRef.child(postId).on(eventType, callback)
   },
-  off: (postId: string) => {
+  offSpecific: (postId: string) => {
     commentsRef.child(postId).off()
   }
   // TODO

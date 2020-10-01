@@ -25,7 +25,7 @@ const Post: React.FC<Props> = ({ match, ...props }) => {
   const [postComments, setPostComments] = useState(null as CommentArray | null)
 
   useEffect(() => {
-    comments.on(postId, 'value', (snapshot) => {
+    comments.onSpecific(postId, 'value', (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val()
         const entries = Object.entries(data)
@@ -38,7 +38,7 @@ const Post: React.FC<Props> = ({ match, ...props }) => {
     })
 
     return () => {
-      comments.off(postId)
+      comments.offSpecific(postId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

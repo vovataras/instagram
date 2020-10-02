@@ -9,7 +9,7 @@ interface Props {
 const LayoutError: React.FC<Props> = ({ error }) => {
   return (
     <Layout>
-      <ErrorPaper>{error}</ErrorPaper>
+      <ErrorPaper error={error} />
     </Layout>
   )
 }

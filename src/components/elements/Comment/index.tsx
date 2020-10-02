@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Avatar,
-  Card,
-  CardHeader,
-  IconButton,
-  Typography
-} from '@material-ui/core'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import { Avatar, Card, CardHeader, Typography } from '@material-ui/core'
 
 import styles from './style.module.scss'
 
@@ -28,11 +21,6 @@ const Comment: React.FC<Props> = ({ username, avatar, comment, className }) => {
             {username[0].toUpperCase()}
           </Avatar>
         }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
         title={
           <Typography className={styles.title} variant="body2">
             {username}
@@ -40,7 +28,6 @@ const Comment: React.FC<Props> = ({ username, avatar, comment, className }) => {
         }
         subheader={
           <Typography
-            className={styles.subheader}
             variant="body2"
             color="textSecondary"
           >

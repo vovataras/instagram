@@ -42,3 +42,7 @@ export interface Comment {
 }
 
 export type CommentArray = Array<[string, Comment]>
+
+export interface CommentsObject {
+  [key: string]: CommentArray
+}

@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { RootState } from '../../../redux/store'
 import { AuthUser } from '../../../typings'
+import LayoutError from '../../modules/LayoutError'
 import LayoutPreloader from '../../modules/LayoutPreloader'
 import FeedView from './view'
 
@@ -14,17 +15,34 @@ const Feed: React.FC<Props> = ({
   posts,
   isUsersLoaded,
   users,
-  currentUid
+  currentUid,
+  isCommentsLoaded,
+  comments
 }) => {
-  if (!isPostsLoaded || !isUsersLoaded) return <LayoutPreloader />
-  return (
-    <FeedView
-      posts={posts!}
-      users={users!}
-      postsError={postsError}
-      currentUid={currentUid}
-    />
-  )
+  if (!isPostsLoaded || !isUsersLoaded || !isCommentsLoaded) {
+    return <LayoutPreloader />
+  }
+
+  let content: JSX.Element[] | JSX.Element | null = null
+
+  if (postsError) {
+    content = <LayoutError error={postsError} />
+  } else {
+    if (posts && users && currentUid) {
+      content = (
+        <FeedView
+          posts={posts}
+          users={users}
+          comments={comments}
+          currentUid={currentUid}
+        />
+      )
+    } else {
+      content = <LayoutError error="Something went wrong" />
+    }
+  }
+
+  return content
 }
 
 const condition = (authUser: AuthUser) => !authUser
@@ -35,7 +53,9 @@ let mapState = (state: RootState) => ({
   posts: state.posts.items,
   isUsersLoaded: state.users.isLoaded,
   users: state.users.items,
-  currentUid: state.auth.uid
+  currentUid: state.auth.uid,
+  isCommentsLoaded: state.comments.isLoaded,
+  comments: state.comments.items
 })
 
 const connector = connect(mapState, {})

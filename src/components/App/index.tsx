@@ -4,15 +4,25 @@ import { onAuthStateChanged } from '../../api/firebase'
 import { verifyAuth } from '../../redux/auth/actions'
 import { initializeApp } from '../../redux/app/actions'
 import Initialization from '../modules/Initialization'
-import { posts, userPosts, users } from '../../services/database'
+import { comments, posts, userPosts, users } from '../../services/database'
 import { setPosts, setError as setPostsError } from '../../redux/posts/actions'
 import {
   setUserPosts,
   resetState as resetUserPostsState,
   setError as setUserPostsError
 } from '../../redux/userPosts/actions'
-import { PostArray, RootState, UsersObject } from '../../typings'
+import {
+  CommentArray,
+  CommentsObject,
+  PostArray,
+  RootState,
+  UsersObject
+} from '../../typings'
 import { setUsers, setError as setUsersError } from '../../redux/users/actions'
+import {
+  setComments,
+  setError as setCommentsError
+} from '../../redux/comments/actions'
 import AppView from './view'
 
 interface Props extends PropsFromRedux {}
@@ -28,7 +38,9 @@ const App: React.FC<Props> = ({
   setUserPostsError,
   resetUserPostsState,
   setUsers,
-  setUsersError
+  setUsersError,
+  setComments,
+  setCommentsError
 }) => {
   const listener = useRef(null as firebase.Unsubscribe | null)
 
@@ -75,12 +87,29 @@ const App: React.FC<Props> = ({
       }
     })
 
+    comments.on('value', (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val()
+        let commentsObj: CommentsObject = {}
+
+        for (const key in data) {
+          const entries = Object.entries(data[key])
+          commentsObj[key] = entries as CommentArray
+        }
+
+        setComments(commentsObj)
+      } else {
+        setCommentsError('No data available!')
+      }
+    })
+
     return () => {
       if (!!listener) {
         listener.current!()
       }
       posts.off()
       users.off()
+      comments.off()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -104,7 +133,9 @@ const connector = connect(mapState, {
   setUserPostsError,
   resetUserPostsState,
   setUsers,
-  setUsersError
+  setUsersError,
+  setComments,
+  setCommentsError
 })
 
 type PropsFromRedux = ConnectedProps<typeof connector>

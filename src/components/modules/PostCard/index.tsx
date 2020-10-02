@@ -77,7 +77,7 @@ const PostCard: React.FC<Props> = ({
       {profileLink ? <Link to={profileLink}>{Header}</Link> : Header}
       <CardMedia className={styles.media} image={image} title={imageAlt} />
       {description && (
-        <CardContent>
+        <CardContent classes={{root: styles.content}}>
           <Typography variant="body2" color="textSecondary" component="p">
             {description}
           </Typography>

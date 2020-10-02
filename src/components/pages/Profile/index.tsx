@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { AuthUser, CommentArray, PostArray, User } from '../../../typings'
+import {
+  AuthUser,
+  CommentArray,
+  PostArray,
+  User,
+  UsersObject
+} from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { RootState } from '../../../redux/store'
 import { connect, ConnectedProps } from 'react-redux'
@@ -8,14 +14,14 @@ import LayoutPreloader from '../../modules/LayoutPreloader'
 import EditProfile, { FormValues } from './EditProfile'
 import { FormikHelpers } from 'formik'
 import { users as usersServices } from '../../../services/database'
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import Routes from '../../../constants/routes'
-import PostCard from '../../modules/PostCard'
-import { posts as postsServices } from '../../../services/database'
 import { Paper } from '@material-ui/core'
 import { userPosts as userPostsServices } from '../../../services/database'
 import { uploadPhoto } from '../../../services/upload'
-import Comment from '../../elements/Comment'
+import PostWithComments from '../../modules/PostWithComments'
+import ErrorPaper from '../../elements/ErrorPaper'
+import LayoutError from '../../modules/LayoutError'
 
 import styles from './style.module.scss'
 
@@ -139,102 +145,29 @@ const Profile: React.FC<Props> = ({
   const getContent = (
     posts: PostArray,
     currentUID: string,
-    isOwner: boolean
+    isOwner: boolean,
+    users: UsersObject
   ) => {
     const content = posts.map((value) => {
-      const postD = value[1]
-      const { uid, date, ...postData } = postD
-      const { username, avatar } = userData!
-      const dateStr = new Date(date).toDateString()
-
-      const handleLikeClick = () => {
-        postsServices.toggleLike(postData.id!, currentUID, uid!)
-      }
-
-      const handleCommentClick = () => {
-        history.push(Routes.POST.replace(':id', postData.id!))
-      }
-
-      const handleRemove = () => {
-        postsServices.delete(postData.id!)
-      }
-
-      let mappedComments: JSX.Element[] | JSX.Element | null = null
-
-      let postComments: CommentArray | null = null
-      const maxCommentsCount = 2
-
-      if (comments) {
-        postComments = comments[postData.id!]
-      }
-
-      let allCommentsCount: number | null = null
-
-      if (postComments) {
-        const restCount = postComments.length - maxCommentsCount
-
-        if (restCount > 0) {
-          allCommentsCount = postComments.length
-        } else {
-          allCommentsCount = null
+      if (value[1]) {
+        let postComments: CommentArray | undefined = undefined
+        if (comments) {
+          postComments = comments[value[1].id!]
         }
-
-        let postCommentsCopy = [...postComments]
-        postCommentsCopy.reverse()
-
-        let sliced = postCommentsCopy.slice(0, maxCommentsCount)
-
-        let slicedCopy = [...sliced]
-        slicedCopy.reverse()
-
-        if (users) {
-          mappedComments = slicedCopy.map((value) => {
-            const commentsD = value[1]
-            const { uid, commentText } = commentsD
-
-            const userData = users[uid!]
-            const { username, avatar } = userData
-
-            return (
-              <Comment
-                key={value[0]}
-                username={username!}
-                avatar={avatar!}
-                comment={commentText}
-              />
-            )
-          })
-        } else {
-          mappedComments = null
-        }
-      }
-
-      return (
-        <div key={value[0]}>
-          <PostCard
-            // key={value[0]}
-            currentUid={currentUID}
-            {...postData}
-            username={username}
-            avatar={avatar}
-            date={dateStr}
-            handleLikeClick={handleLikeClick}
-            handleCommentClick={handleCommentClick}
+        return (
+          <PostWithComments
+            key={value[0]}
+            currentUID={currentUID}
+            post={value[1]}
+            users={users}
+            postComments={postComments}
             showSettings={isOwner}
-            handleRemove={isOwner ? handleRemove : undefined}
+            isProfilePage
           />
-          {allCommentsCount && (
-            <Link to={Routes.POST.replace(':id', postData.id!)}>
-              <Paper className={styles.paperLink}>
-                View all {allCommentsCount} comments.
-              </Paper>
-            </Link>
-          )}
-          {mappedComments && (
-            <div className={styles.comments}>{mappedComments}</div>
-          )}
-        </div>
-      )
+        )
+      } else {
+        return <ErrorPaper error="Post data is unavailable" />
+      }
     })
 
     return content
@@ -243,19 +176,22 @@ const Profile: React.FC<Props> = ({
   const setContent = (
     error: string | null,
     posts: PostArray | null,
-    isOwner: boolean
+    isOwner: boolean,
+    users: UsersObject | null
   ) => {
     if (error) {
       content = <Paper className={styles.errorPaper}>{error}</Paper>
-    } else if (posts) {
-      content = getContent(posts, user.uid, isOwner)
+    } else if (posts && users) {
+      content = getContent(posts, user.uid, isOwner, users)
+    } else {
+      content = <LayoutError error="Something went wrong." />
     }
   }
 
   if (isOwner) {
-    setContent(userPostsError, userPosts, true)
+    setContent(userPostsError, userPosts, true, users)
   } else {
-    setContent(postsState.error, postsState.items, false)
+    setContent(postsState.error, postsState.items, false, users)
   }
 
   return (

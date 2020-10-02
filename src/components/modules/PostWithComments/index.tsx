@@ -14,13 +14,17 @@ interface Props {
   users: UsersObject
   currentUID: string
   postComments?: CommentArray
+  showSettings?: boolean
+  isProfilePage?: boolean
 }
 
 const PostWithComments: React.FC<Props> = ({
   post,
   users,
   currentUID,
-  postComments
+  postComments,
+  showSettings,
+  isProfilePage
 }) => {
   const history = useHistory()
 
@@ -31,7 +35,9 @@ const PostWithComments: React.FC<Props> = ({
 
   const dateStr = new Date(date).toDateString()
 
-  const profileLink = Routes.PROFILE_ID.replace(':id', uid!)
+  const profileLink = isProfilePage
+    ? undefined
+    : Routes.PROFILE_ID.replace(':id', uid!)
 
   const handleLikeClick = () => {
     postsServices.toggleLike(postData.id!, currentUID, uid!)
@@ -39,6 +45,10 @@ const PostWithComments: React.FC<Props> = ({
 
   const handleCommentClick = () => {
     history.push(Routes.POST.replace(':id', postData.id!))
+  }
+
+  const handleRemove = () => {
+    postsServices.delete(postData.id!)
   }
 
   let mappedComments: JSX.Element[] | JSX.Element | null = null
@@ -92,11 +102,13 @@ const PostWithComments: React.FC<Props> = ({
         handleLikeClick={handleLikeClick}
         currentUid={currentUID}
         handleCommentClick={handleCommentClick}
+        showSettings={showSettings}
+        handleRemove={showSettings ? handleRemove : undefined}
       />
       {allCommentsCount && (
         <Link to={Routes.POST.replace(':id', postData.id!)}>
           <Paper className={styles.paperLink}>
-            View all {allCommentsCount} comments.
+            View all {allCommentsCount} comments
           </Paper>
         </Link>
       )}

@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { RootState } from '../../../redux/store'
 import { AuthUser } from '../../../typings'
+import LayoutError from '../../modules/LayoutError'
 import LayoutPreloader from '../../modules/LayoutPreloader'
 import FeedView from './view'
 
@@ -18,17 +19,30 @@ const Feed: React.FC<Props> = ({
   isCommentsLoaded,
   comments
 }) => {
-  if (!isPostsLoaded || !isUsersLoaded || !isCommentsLoaded)
+  if (!isPostsLoaded || !isUsersLoaded || !isCommentsLoaded) {
     return <LayoutPreloader />
-  return (
-    <FeedView
-      posts={posts!}
-      users={users!}
-      comments={comments}
-      postsError={postsError}
-      currentUid={currentUid}
-    />
-  )
+  }
+
+  let content: JSX.Element[] | JSX.Element | null = null
+
+  if (postsError) {
+    content = <LayoutError error={postsError} />
+  } else {
+    if (posts && users && currentUid) {
+      content = (
+        <FeedView
+          posts={posts}
+          users={users}
+          comments={comments}
+          currentUid={currentUid}
+        />
+      )
+    } else {
+      content = <LayoutError error="Something went wrong" />
+    }
+  }
+
+  return content
 }
 
 const condition = (authUser: AuthUser) => !authUser

@@ -1,3 +1,5 @@
+@import '../../../styles/variables';
+
 .profile {
   & > * {
     margin-bottom: 2rem;
@@ -14,4 +16,19 @@
 
 .avatarTextAfter {
   padding-left: 1rem;
+}
+
+.paperLink {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.comments {
+  margin-top: 0.5rem;
 }

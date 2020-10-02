@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { AuthUser, PostArray, User } from '../../../typings'
+import { AuthUser, CommentArray, PostArray, User } from '../../../typings'
 import withAuthorization from '../../../hocs/withAuthorization'
 import { RootState } from '../../../redux/store'
 import { connect, ConnectedProps } from 'react-redux'
@@ -8,13 +8,14 @@ import LayoutPreloader from '../../modules/LayoutPreloader'
 import EditProfile, { FormValues } from './EditProfile'
 import { FormikHelpers } from 'formik'
 import { users as usersServices } from '../../../services/database'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import Routes from '../../../constants/routes'
 import PostCard from '../../modules/PostCard'
 import { posts as postsServices } from '../../../services/database'
 import { Paper } from '@material-ui/core'
 import { userPosts as userPostsServices } from '../../../services/database'
 import { uploadPhoto } from '../../../services/upload'
+import Comment from '../../elements/Comment'
 
 import styles from './style.module.scss'
 
@@ -27,6 +28,7 @@ const Profile: React.FC<Props> = ({
   isUserPostsLoaded,
   userPostsError,
   userPosts,
+  comments,
   match,
   history
 }) => {
@@ -157,19 +159,81 @@ const Profile: React.FC<Props> = ({
         postsServices.delete(postData.id!)
       }
 
+      let mappedComments: JSX.Element[] | JSX.Element | null = null
+
+      let postComments: CommentArray | null = null
+      const maxCommentsCount = 2
+
+      if (comments) {
+        postComments = comments[postData.id!]
+      }
+
+      let allCommentsCount: number | null = null
+
+      if (postComments) {
+        const restCount = postComments.length - maxCommentsCount
+
+        if (restCount > 0) {
+          allCommentsCount = postComments.length
+        } else {
+          allCommentsCount = null
+        }
+
+        let postCommentsCopy = [...postComments]
+        postCommentsCopy.reverse()
+
+        let sliced = postCommentsCopy.slice(0, maxCommentsCount)
+
+        let slicedCopy = [...sliced]
+        slicedCopy.reverse()
+
+        if (users) {
+          mappedComments = slicedCopy.map((value) => {
+            const commentsD = value[1]
+            const { uid, commentText } = commentsD
+
+            const userData = users[uid!]
+            const { username, avatar } = userData
+
+            return (
+              <Comment
+                key={value[0]}
+                username={username!}
+                avatar={avatar!}
+                comment={commentText}
+              />
+            )
+          })
+        } else {
+          mappedComments = null
+        }
+      }
+
       return (
-        <PostCard
-          key={value[0]}
-          currentUid={currentUID}
-          {...postData}
-          username={username}
-          avatar={avatar}
-          date={dateStr}
-          handleLikeClick={handleLikeClick}
-          handleCommentClick={handleCommentClick}
-          showSettings={isOwner}
-          handleRemove={isOwner ? handleRemove : undefined}
-        />
+        <div key={value[0]}>
+          <PostCard
+            // key={value[0]}
+            currentUid={currentUID}
+            {...postData}
+            username={username}
+            avatar={avatar}
+            date={dateStr}
+            handleLikeClick={handleLikeClick}
+            handleCommentClick={handleCommentClick}
+            showSettings={isOwner}
+            handleRemove={isOwner ? handleRemove : undefined}
+          />
+          {allCommentsCount && (
+            <Link to={Routes.POST.replace(':id', postData.id!)}>
+              <Paper className={styles.paperLink}>
+                View all {allCommentsCount} comments.
+              </Paper>
+            </Link>
+          )}
+          {mappedComments && (
+            <div className={styles.comments}>{mappedComments}</div>
+          )}
+        </div>
       )
     })
 
@@ -225,7 +289,8 @@ let mapState = (state: RootState) => ({
   users: state.users.items,
   isUserPostsLoaded: state.userPosts.isLoaded,
   userPostsError: state.userPosts.error,
-  userPosts: state.userPosts.items
+  userPosts: state.userPosts.items,
+  comments: state.comments.items
 })
 
 const connector = connect(mapState, {})

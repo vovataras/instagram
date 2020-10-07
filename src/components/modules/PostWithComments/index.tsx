@@ -61,9 +61,7 @@ const PostWithComments: React.FC<Props> = ({
 
     if (restCount > 0) {
       allCommentsCount = postComments.length
-    } else {
-      allCommentsCount = null
-    }
+    } 
 
     let postCommentsCopy = [...postComments]
     postCommentsCopy.reverse()

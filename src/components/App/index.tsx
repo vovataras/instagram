@@ -104,8 +104,8 @@ const App: React.FC<Props> = ({
     })
 
     return () => {
-      if (!!listener) {
-        listener.current!()
+      if (!!listener.current) {
+        listener.current()
       }
       posts.off()
       users.off()

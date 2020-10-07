@@ -4,7 +4,7 @@ import { Paper } from '@material-ui/core'
 import styles from './style.module.scss'
 
 interface Props {
-  error?: string | null
+  error?: string
 }
 
 const ErrorPaper: React.FC<Props> = ({ error }) => {

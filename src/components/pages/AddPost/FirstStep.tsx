@@ -6,19 +6,29 @@ import styles from './style.module.scss'
 
 interface Props {
   image: string | null
+  imgError: string | null
   setImage: React.Dispatch<React.SetStateAction<string | null>>
   setImgFile: React.Dispatch<React.SetStateAction<File | null>>
+  setImgError: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const FirstStep: React.FC<Props> = ({ image, setImage, setImgFile }) => {
+const FirstStep: React.FC<Props> = ({
+  image,
+  imgError,
+  setImage,
+  setImgFile,
+  setImgError
+}) => {
   const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!!event) {
-      const imgFile = event.target.files![0]
+        const imgFile = event.target.files![0]
 
-      let imageSrc = URL.createObjectURL(imgFile)
-      setImage(imageSrc)
+        let imageSrc = URL.createObjectURL(imgFile)
+        setImage(imageSrc)
 
-      setImgFile(imgFile)
+        setImgFile(imgFile)
+      } else {
+      setImgError('Error: Image file not found.')
     }
   }
 
@@ -30,6 +40,7 @@ const FirstStep: React.FC<Props> = ({ image, setImage, setImgFile }) => {
           <CardMedia className={styles.media} image={image} />
         </Card>
       ) : null}
+      {imgError && <div className={styles.eventError}>{imgError}</div>}
     </div>
   )
 }

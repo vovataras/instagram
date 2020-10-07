@@ -3,7 +3,7 @@ import Layout from '../Layout'
 import ErrorPaper from '../../elements/ErrorPaper'
 
 interface Props {
-  error?: string | null
+  error?: string 
 }
 
 const LayoutError: React.FC<Props> = ({ error }) => {

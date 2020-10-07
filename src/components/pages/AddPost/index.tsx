@@ -32,6 +32,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   const [skipped, setSkipped] = useState(new Set<number>())
   const [image, setImage] = useState(null as string | null)
   const [imgFile, setImgFile] = useState(null as File | null)
+  const [imgError, setImgError] = useState(null as string | null)
   const [shareError, setShareError] = useState(null as string | null)
   const [isHandlingShare, setIsHandlingShare] = useState(false)
   const [description, setDescription] = useState('')
@@ -54,8 +55,10 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
         return (
           <FirstStep
             image={image}
+            imgError={imgError}
             setImage={setImage}
             setImgFile={setImgFile}
+            setImgError={setImgError}
           />
         )
       case 1:

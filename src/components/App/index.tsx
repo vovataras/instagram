@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { onAuthStateChanged } from '../../api/firebase'
 import { verifyAuth } from '../../redux/auth/actions'
@@ -42,10 +42,8 @@ const App: React.FC<Props> = ({
   setComments,
   setCommentsError
 }) => {
-  const listener = useRef(null as firebase.Unsubscribe | null)
-
   useEffect(() => {
-    listener.current = onAuthStateChanged((authUser) => {
+    const listener = onAuthStateChanged((authUser) => {
       if (!authUser) {
         resetUserPostsState()
         if (!!uid) userPosts.off(uid)
@@ -104,8 +102,8 @@ const App: React.FC<Props> = ({
     })
 
     return () => {
-      if (!!listener.current) {
-        listener.current()
+      if (!!listener) {
+        listener()
       }
       posts.off()
       users.off()

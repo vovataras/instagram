@@ -68,10 +68,7 @@ const PostWithComments: React.FC<Props> = ({
 
     let sliced = postCommentsCopy.slice(0, maxCommentsCount)
 
-    let slicedCopy = [...sliced]
-    slicedCopy.reverse()
-
-    mappedComments = slicedCopy.map((value) => {
+    mappedComments = sliced.reverse().map((value) => {
       const commentsD = value[1]
       const { uid, commentText } = commentsD
 

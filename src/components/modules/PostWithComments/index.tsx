@@ -6,6 +6,10 @@ import Routes from '../../../constants/routes'
 import { Link, useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { posts as postsServices } from '../../../services/database'
+import CommentForm, { FormValues } from '../CommentForm'
+import { FormikHelpers } from 'formik'
+import { Comment as CommentType } from '../../../typings'
+import { comments as commentsServices } from '../../../services/database'
 
 import styles from './style.module.scss'
 
@@ -51,6 +55,19 @@ const PostWithComments: React.FC<Props> = ({
     postsServices.delete(postData.id!)
   }
 
+  const handleCommentSubmit = (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => {
+    const comment: CommentType = {
+      uid: currentUID,
+      commentText: values.comment
+    }
+    commentsServices.create(post.id!, comment)
+    formikHelpers.setSubmitting(false)
+    formikHelpers.resetForm()
+  }
+
   let mappedComments: JSX.Element[] | JSX.Element | null = null
   const maxCommentsCount = 2
 
@@ -61,7 +78,7 @@ const PostWithComments: React.FC<Props> = ({
 
     if (restCount > 0) {
       allCommentsCount = postComments.length
-    } 
+    }
 
     let postCommentsCopy = [...postComments]
     postCommentsCopy.reverse()
@@ -110,6 +127,7 @@ const PostWithComments: React.FC<Props> = ({
       {mappedComments && (
         <div className={styles.comments}>{mappedComments}</div>
       )}
+      <CommentForm handleSubmit={handleCommentSubmit} />
     </div>
   )
 }

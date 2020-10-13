@@ -5,6 +5,10 @@ import PostCard from '../../modules/PostCard'
 import { Post, User } from '../../../typings'
 import { FormikHelpers } from 'formik'
 import Routes from '../../../constants/routes'
+import { Paper } from '@material-ui/core'
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+
+import styles from './style.module.scss'
 
 interface Props {
   post: Post
@@ -12,6 +16,7 @@ interface Props {
   currentUid?: string
   commentsContent: JSX.Element | JSX.Element[] | null
   isCommentsLoaded: boolean
+  handleBackClick?: () => void
   handleSubmit: (
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>
@@ -25,6 +30,7 @@ const PostView: React.FC<Props> = ({
   currentUid,
   commentsContent,
   isCommentsLoaded,
+  handleBackClick,
   handleSubmit,
   handleLikeClick
 }) => {
@@ -35,6 +41,10 @@ const PostView: React.FC<Props> = ({
 
   return (
     <Layout>
+      <Paper className={styles.backBtn} onClick={handleBackClick}>
+        <ArrowBackIosIcon fontSize="small" />
+        Back
+      </Paper>
       <PostCard
         profileLink={profileLink}
         username={username}

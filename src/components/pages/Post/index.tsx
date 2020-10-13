@@ -52,6 +52,14 @@ const Post: React.FC<Props> = ({
         return
       }
 
+      const handleBackClick = () => {
+        if (history.length > 2) {
+          history.goBack()
+        } else {
+          history.push(Routes.FEED)
+        }
+      }
+
       const handleLikeClick = () => {
         postsServices.toggleLike(post.id!, currentUid!, post.uid!)
       }
@@ -103,6 +111,7 @@ const Post: React.FC<Props> = ({
           isCommentsLoaded={isCommentsLoaded}
           commentsContent={commentsContent}
           handleLikeClick={handleLikeClick}
+          handleBackClick={handleBackClick}
         />
       )
     }

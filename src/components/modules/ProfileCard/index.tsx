@@ -51,7 +51,7 @@ const ProfileCard: React.FC<Props> = ({
             alt={username}
             src={avatar}
           >
-            {username![0].toUpperCase()}
+            {username[0].toUpperCase()}
           </Avatar>
         }
         action={

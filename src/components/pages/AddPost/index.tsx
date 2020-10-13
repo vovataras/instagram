@@ -155,7 +155,6 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
           image: downloadURL,
           date: new Date(),
           description: !skipped.size ? description : null,
-          commentsCount: 0,
           likesCount: 0
         }
         await posts.create(post)

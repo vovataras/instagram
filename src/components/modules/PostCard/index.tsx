@@ -26,7 +26,6 @@ interface Props {
   description?: string | null
   date?: string
   likesCount?: number
-  commentsCount?: number
   postPreview?: boolean
   showSettings?: boolean
   likes?: Likes
@@ -45,7 +44,6 @@ const PostCard: React.FC<Props> = ({
   description,
   date,
   likesCount,
-  commentsCount,
   postPreview,
   showSettings,
   likes,
@@ -96,8 +94,6 @@ const PostCard: React.FC<Props> = ({
         <IconButton aria-label="comment" onClick={handleCommentClick}>
           <AddCommentIcon />
         </IconButton>
-        {/* {commentsCount}
-        {postPreview && '∞'} */}
       </CardActions>
     </Card>
   )

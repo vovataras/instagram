@@ -29,7 +29,6 @@ export interface Post {
   date: Date
   likes?: Likes
   likesCount: number
-  commentsCount: number
 }
 
 export type PostArray = Array<[string, Post]>

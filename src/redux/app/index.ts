@@ -1,4 +1,4 @@
-import { ActionsTypes, Actions } from './actions'
+import { Actions, ActionsTypes } from "./types"
 
 let initialState = {
   initialized: false

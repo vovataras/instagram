@@ -1,4 +1,4 @@
-import { ActionsTypes, Actions } from './actions'
+import { ActionsTypes, Actions } from './types'
 import { CommentsObject } from '../../typings'
 
 let initialState = {

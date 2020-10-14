@@ -43,7 +43,7 @@ const HorizontalLinearStepper: React.FC<Props> = ({ history, ...props }) => {
   let userData: User | undefined = undefined
 
   if (users && user) {
-    userData = users![user!.uid]
+    userData = users[user.uid]
   }
 
   const theme = useTheme()

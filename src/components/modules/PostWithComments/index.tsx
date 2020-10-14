@@ -96,7 +96,7 @@ const PostWithComments: React.FC<Props> = ({
         <Comment
           key={value[0]}
           username={username!}
-          avatar={avatar!}
+          avatar={avatar ? avatar : undefined}
           comment={commentText}
         />
       )
@@ -107,8 +107,8 @@ const PostWithComments: React.FC<Props> = ({
     <div className={styles.root}>
       <PostCard
         profileLink={profileLink}
-        username={username}
-        avatar={avatar}
+        username={username ? username : 'NULL'}
+        avatar={avatar ? avatar : undefined}
         {...postData}
         date={dateStr}
         handleLikeClick={handleLikeClick}

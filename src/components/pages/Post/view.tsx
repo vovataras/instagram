@@ -47,8 +47,8 @@ const PostView: React.FC<Props> = ({
       </Paper>
       <PostCard
         profileLink={profileLink}
-        username={username}
-        avatar={avatar}
+        username={username ? username : 'NULL'}
+        avatar={avatar ? avatar : undefined}
         date={new Date(post.date).toDateString()}
         {...postData}
         currentUid={currentUid}

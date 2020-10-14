@@ -45,7 +45,7 @@ const Post: React.FC<Props> = ({
       }
 
       const post = postEntry![1]
-      const userData = users![post.uid!]
+      const userData = users[post.uid!]
 
       if (!userData || !currentUid) {
         content = <LayoutError error="User data not found!" />

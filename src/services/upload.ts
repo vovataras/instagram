@@ -7,7 +7,7 @@ const uploadPhoto = async (imgFile: File) => {
     maxWidthOrHeight: 500,
     useWebWorker: true
   }
-  const compressedFile = await imageCompression(imgFile!, options)
+  const compressedFile = await imageCompression(imgFile, options)
 
   const uploadTask = putAvatar(compressedFile)
 

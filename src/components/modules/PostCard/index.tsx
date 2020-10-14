@@ -19,8 +19,8 @@ import styles from './style.module.scss'
 
 interface Props {
   profileLink?: string
-  username?: string
-  avatar?: string | null
+  username: string
+  avatar?: string
   image: string
   imageAlt?: string
   description?: string | null
@@ -57,11 +57,11 @@ const PostCard: React.FC<Props> = ({
     <CardHeader
       avatar={
         <Avatar
-          aria-label={username!.toLowerCase()}
+          aria-label={username.toLowerCase()}
           alt={username}
-          src={avatar!}
+          src={avatar}
         >
-          {username![0].toUpperCase()}
+          {username[0].toUpperCase()}
         </Avatar>
       }
       action={showSettings && <PostSettings handleRemove={handleRemove} />}

@@ -23,7 +23,7 @@ const FinalStep: React.FC<Props> = ({
       {isHandlingShare ? (
         <Preloader />
       ) : (
-        <PostCard {...props} username={username} avatar={avatar} postPreview />
+        <PostCard {...props} username={username ? username : 'NULL'} avatar={avatar} postPreview />
       )}
     </div>
   )

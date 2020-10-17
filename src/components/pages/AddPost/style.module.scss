@@ -1,0 +1,78 @@
+.root {
+  width: 100%;
+
+  .button {
+    margin-right: 0.5rem;
+  }
+
+  .instructions {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+}
+
+.firstStep,
+.secondStep,
+.finalStep {
+  margin: 1.5rem auto;
+}
+
+.firstStep {
+  .card {
+    margin-top: 1.5rem;
+  }
+
+  .media {
+    height: 0;
+    padding-top: 56.25%;
+  }
+
+  .eventError {
+    margin-top: 1rem;
+  }
+}
+
+.secondStep {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  & > :first-child {
+    max-width: 400px;
+    width: 32%;
+    margin-right: 3%;
+  }
+
+  & > :last-child {
+    width: 65%;
+    min-width: 300px;
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+  }
+
+  .input {
+    min-width: 200px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 599px) {
+  .secondStep {
+    & > :first-child {
+      width: 100%;
+      max-width: 100%;
+      margin-right: 0;
+    }
+
+    & > :last-child {
+      width: 100%;
+      min-width: 100%;
+      margin-top: 1.5rem;
+    }
+  }
+}

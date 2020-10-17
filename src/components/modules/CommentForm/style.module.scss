@@ -1,0 +1,14 @@
+.inputBlock {
+  padding: 0.5rem 1rem 0.8rem;
+  margin-top: 0.25rem;
+
+  .form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & > :first-child {
+      margin-right: 1rem;
+    }
+  }
+}

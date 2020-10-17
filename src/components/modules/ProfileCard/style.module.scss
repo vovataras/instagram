@@ -1,0 +1,30 @@
+.cardHeader {
+  flex-wrap: wrap;
+  & > :nth-child(2),
+  & > :nth-child(3) {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .avatar {
+    height: 120px;
+    width: 120px;
+  }
+  .avatarSM {
+    height: 100px;
+    width: 100px;
+  }
+  .avatarXS {
+    height: 80px;
+    width: 80px;
+  }
+
+  .title,
+  .subheader {
+    margin-left: 2vw;
+  }
+
+  .subheader {
+    margin-top: 0.5rem;
+  }
+}
